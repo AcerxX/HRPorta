@@ -96,25 +96,36 @@
 			<version>5.86.1.RELEASE</version>
 		</dependency>
 		<dependency>
-			<groupId>org.jtwig</groupId>
-			<artifactId>jtwig-spring-asset-extension</artifactId>
-			<version>5.86.1.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jtwig</groupId>
-			<artifactId>jtwig-hot-reloading-extension</artifactId>
-			<version>5.86.1.RELEASE</version>
-		</dependency>
+            <groupId>org.jtwig</groupId>
+            <artifactId>jtwig-spring-asset-extension</artifactId>
+            <version>5.86.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jtwig</groupId>
+            <artifactId>jtwig-hot-reloading-extension</artifactId>
+            <version>5.86.1.RELEASE</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.junit.vintage</groupId>
-					<artifactId>junit-vintage-engine</artifactId>
-				</exclusion>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>AdminLTE</artifactId>
+            <version>3.0.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>font-awesome</artifactId>
+            <version>5.14.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
 			</exclusions>
 		</dependency>
 	</dependencies>
