@@ -18,6 +18,8 @@ public class Company {
     private String name;
     private boolean status;
 
+    private String logo;
+
     @ManyToOne(targetEntity = License.class)
     private License license;
 }

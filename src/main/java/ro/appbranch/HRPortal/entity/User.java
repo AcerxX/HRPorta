@@ -20,6 +20,7 @@ public class User {
     private String email;
     private String password;
     private String fullName;
+    private String image;
     private boolean status = true;
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -38,6 +39,8 @@ public class User {
     )
     private List<Webpage> webpages;
 
+    @ManyToOne(targetEntity = Company.class)
+    private Company company;
 
     @Transient
     private String passwordConfirm;
