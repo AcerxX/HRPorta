@@ -184,7 +184,7 @@
                     {% for webpage in webpages %}
                         <li class="nav-item">
                             <a href="#" class="nav-link {% if currentUri == webpage.link %}active{% endif %}">
-                                <i class="fas fa-glass-cheers"></i>
+                                <i class="nav-icon {{ webpage.faIcon }}"></i>
                                 <p>
                                     {{ webpage.displayedName }}
                                     <span class="right badge badge-danger">New</span>
@@ -215,15 +215,6 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-th"></i>
-                            <p>
-                                Simple Link
-                                <span class="right badge badge-danger">New</span>
-                            </p>
-                        </a>
                     </li>
                 </ul>
             </nav>

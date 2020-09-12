@@ -19,7 +19,7 @@ public class Webpage {
 
     private String displayedName;
     private String link;
-    private String iconPath;
+    private String faIcon;
     private boolean status;
     private Integer roleLevel;
 }
