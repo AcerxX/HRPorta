@@ -62,7 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .rememberMe()
-                .key("remember-me-key")
+                .key("remember-me-hrp")
                 .tokenValiditySeconds(86400);
     }
 

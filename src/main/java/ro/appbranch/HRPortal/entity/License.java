@@ -12,6 +12,9 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @Table(name = "license")
 public class License {
+    public static final String LICENSE_CODE_FREE = "FREE";
+    public static final String LICENSE_CODE_FULL_ADMIN = "FULL_ADMIN";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
