@@ -7,12 +7,15 @@ import lombok.experimental.Accessors;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "permission")
+@Table(name = "role")
 @Getter
 @Setter
 @Accessors(chain = true)
-public class Permission {
-    public static final int PERMISSION_ID_ADMIN = 13;
+public class Role {
+    public static final int ROLE_ID_USER = 1;
+    public static final int ROLE_ID_TEAM_LEADER = 2;
+    public static final int ROLE_ID_HR = 3;
+    public static final int ROLE_ID_ADMIN = 4;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,4 +23,5 @@ public class Permission {
 
     private String code;
     private String group;
+    private Integer level;
 }

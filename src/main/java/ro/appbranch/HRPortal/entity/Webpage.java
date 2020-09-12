@@ -21,4 +21,5 @@ public class Webpage {
     private String link;
     private String iconPath;
     private boolean status;
+    private Integer roleLevel;
 }

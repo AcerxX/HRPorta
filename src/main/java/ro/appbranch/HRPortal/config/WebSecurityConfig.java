@@ -70,9 +70,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication().dataSource(dataSource)
                 .usersByUsernameQuery("SELECT username, password, status FROM user WHERE username=?")
-                .authoritiesByUsernameQuery("SELECT u.username, p.code FROM user u " +
-                        "INNER JOIN user_permission up ON up.user_id = u.id " +
-                        "INNER JOIN permission p ON p.id = up.permission_id " +
+                .authoritiesByUsernameQuery("SELECT u.username, r.code FROM user u " +
+                        "INNER JOIN role r ON r.id = u.role_id " +
                         "WHERE u.username=?")
                 .passwordEncoder(bCryptPasswordEncoder());
     }

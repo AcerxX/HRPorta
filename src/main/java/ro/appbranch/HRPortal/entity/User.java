@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Getter
@@ -23,24 +22,11 @@ public class User {
     private String image;
     private boolean status = true;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "user_permission",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "permission_id")
-    )
-    private List<Permission> permissions;
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "user_webpage",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "webpage_code")
-    )
-    private List<Webpage> webpages;
-
     @ManyToOne(targetEntity = Company.class)
     private Company company;
+
+    @ManyToOne(targetEntity = Role.class)
+    private Role role;
 
     @Transient
     private String passwordConfirm;
