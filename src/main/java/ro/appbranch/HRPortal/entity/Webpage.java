@@ -16,6 +16,8 @@ import javax.persistence.Table;
 public class Webpage {
     @Id
     private String code;
+
+    private String displayedName;
     private String link;
     private String iconPath;
     private boolean status;
