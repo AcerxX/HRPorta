@@ -5,6 +5,6 @@ import ro.appbranch.HRPortal.entity.Webpage;
 
 import java.util.List;
 
-public interface WebpageRepository extends PagingAndSortingRepository<Webpage, String> {
+public interface WebpageRepository extends PagingAndSortingRepository<Webpage, Integer> {
     List<Webpage> findAllByRoleLevelIsLessThanEqual(Integer roleLevel);
 }

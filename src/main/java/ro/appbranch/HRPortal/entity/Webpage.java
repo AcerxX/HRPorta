@@ -4,9 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -15,11 +15,23 @@ import javax.persistence.Table;
 @Table(name = "webpage")
 public class Webpage {
     @Id
-    private String code;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
+    private String code;
     private String displayedName;
     private String link;
     private String faIcon;
     private boolean status;
     private Integer roleLevel;
+    private boolean newWebpage = false;
+
+    @ManyToOne(targetEntity = Webpage.class)
+    private Webpage parent;
+
+    @Transient
+    private List<Webpage> children = new ArrayList<>();
+
+    @Transient
+    private boolean active = false;
 }

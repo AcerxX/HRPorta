@@ -177,45 +177,55 @@
 
             <!-- Sidebar Menu -->
             <nav class="mt-2">
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent nav-legacy" data-widget="treeview"
+                    role="menu"
                     data-accordion="false">
                     <!-- Add icons to the links using the .nav-icon class
                          with font-awesome or any other icon font library -->
                     {% for webpage in webpages %}
-                        <li class="nav-item">
-                            <a href="#" class="nav-link {% if currentUri == webpage.link %}active{% endif %}">
-                                <i class="nav-icon {{ webpage.faIcon }}"></i>
-                                <p>
-                                    {{ webpage.displayedName }}
-                                    <span class="right badge badge-danger">New</span>
-                                </p>
-                            </a>
-                        </li>
+                        {% if webpage.children is empty %}
+                            <li class="nav-item">
+                                <a href="{{ webpage.link }}" class="nav-link {% if webpage.active %}active{% endif %}">
+                                    <i class="nav-icon {{ webpage.faIcon }}"></i>
+                                    <p>
+                                        {{ webpage.displayedName }}
+                                        {% if webpage.newWebpage %}
+                                            <span class="right badge badge-danger">New</span>
+                                        {% endif %}
+                                    </p>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item has-treeview {% if webpage.active %}menu-open{% endif %}">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon {{ webpage.faIcon }}"></i>
+                                    <p>
+                                        {{ webpage.displayedName }}
+                                        {% if webpage.newWebpage %}
+                                            <span class="right badge badge-danger">New</span>
+                                        {% endif %}
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    {% for childWebpage in webpage.children %}
+                                        <li class="nav-item">
+                                            <a href="{{ childWebpage.link }}"
+                                               class="nav-link {% if childWebpage.active %}active{% endif %}">
+                                                <i class="{{ childWebpage.faIcon }} nav-icon"></i>
+                                                <p>
+                                                    {{ childWebpage.displayedName }}
+                                                    {% if childWebpage.newWebpage %}
+                                                        <span class="right badge badge-danger">New</span>
+                                                    {% endif %}
+                                                </p>
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endif %}
                     {% endfor %}
-
-                    <li class="nav-item has-treeview menu-open">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-tachometer-alt"></i>
-                            <p>
-                                Starter Pages
-                                <i class="right fas fa-angle-left"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>Active Page</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>Inactive Page</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
                 </ul>
             </nav>
             <!-- /.sidebar-menu -->

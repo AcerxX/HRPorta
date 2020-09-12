@@ -2,6 +2,7 @@ package ro.appbranch.HRPortal.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -10,7 +11,10 @@ import ro.appbranch.HRPortal.entity.Webpage;
 import ro.appbranch.HRPortal.repository.WebpageRepository;
 import ro.appbranch.HRPortal.service.UserService;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -30,15 +34,46 @@ public class SecuredController {
         return userService.getLoggedUser();
     }
 
+    @ModelAttribute("currentUri")
+    public static String getCurrentUri() {
+        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getRequestURI();
+    }
+
     @ModelAttribute("webpages")
     public List<Webpage> getCurrentUserWebPages() {
         var loggedUser = getLoggedUser();
 
-        return loggedUser == null ? null : webpageRepository.findAllByRoleLevelIsLessThanEqual(loggedUser.getRole().getLevel());
-    }
+        if (ObjectUtils.isEmpty(loggedUser)) {
+            return List.of();
+        }
 
-    @ModelAttribute("currentUri")
-    public String getCurrentUri() {
-        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getRequestURI();
+        // compute children
+        Map<Integer, Webpage> webpageMap = new HashMap<>();
+
+        var allWebPages = webpageRepository.findAllByRoleLevelIsLessThanEqual(loggedUser.getRole().getLevel());
+
+        allWebPages.stream()
+                .filter(webpage -> ObjectUtils.isEmpty(webpage.getParent()))
+                .forEach(webpage -> {
+                    if (getCurrentUri().equals(webpage.getLink())) {
+                        webpage.setActive(true);
+                    }
+
+                    webpageMap.put(webpage.getId(), webpage);
+                });
+
+        allWebPages.stream()
+                .filter(webpage -> !ObjectUtils.isEmpty(webpage.getParent()))
+                .forEach(webpage -> {
+                    if (getCurrentUri().equals(webpage.getLink())) {
+                        webpage.setActive(true);
+                        webpageMap.get(webpage.getParent().getId()).setActive(true);
+                    }
+
+                    webpageMap.get(webpage.getParent().getId()).getChildren().add(webpage);
+                });
+
+
+        return new ArrayList<>(webpageMap.values());
     }
 }
