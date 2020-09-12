@@ -30,6 +30,14 @@ public class User {
     )
     private List<Permission> permissions;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "user_webpage",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "webpage_code")
+    )
+    private List<Webpage> webpages;
+
 
     @Transient
     private String passwordConfirm;
