@@ -13,10 +13,11 @@
 
     <link rel="stylesheet" type="text/css" href="/webjars/font-awesome/5.14.0/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="/webjars/AdminLTE/3.0.5/dist/css/adminlte.min.css">
+    <link rel="stylesheet" type="text/css" href="/webjars/AdminLTE/3.0.5/plugins/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" type="text/css"
+          href="/webjars/AdminLTE/3.0.5/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
-    {# <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" #}
-    {# integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous"> #}
 
     {% block stylesheets %}
     {% endblock %}
@@ -66,7 +67,7 @@
                     <a href="#" class="dropdown-item">
                         <!-- Message Start -->
                         <div class="media">
-                            <img src="webjars/AdminLTE/3.0.5/dist/img/user1-128x128.jpg" alt="User Avatar"
+                            <img src="/webjars/AdminLTE/3.0.5/dist/img/user1-128x128.jpg" alt="User Avatar"
                                  class="img-size-50 mr-3 img-circle">
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
@@ -83,7 +84,7 @@
                     <a href="#" class="dropdown-item">
                         <!-- Message Start -->
                         <div class="media">
-                            <img src="webjars/AdminLTE/3.0.5/dist/img/user8-128x128.jpg" alt="User Avatar"
+                            <img src="/webjars/AdminLTE/3.0.5/dist/img/user8-128x128.jpg" alt="User Avatar"
                                  class="img-size-50 img-circle mr-3">
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
@@ -100,7 +101,7 @@
                     <a href="#" class="dropdown-item">
                         <!-- Message Start -->
                         <div class="media">
-                            <img src="webjars/AdminLTE/3.0.5/dist/img/user8-128x128.jpg" alt="User Avatar"
+                            <img src="/webjars/AdminLTE/3.0.5/dist/img/user8-128x128.jpg" alt="User Avatar"
                                  class="img-size-50 img-circle mr-3">
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
@@ -185,12 +186,16 @@
                     {% for webpage in webpages %}
                         {% if webpage.children is empty %}
                             <li class="nav-item">
-                                <a href="{{ webpage.link }}" class="nav-link {% if webpage.active %}active{% endif %}">
+                                <a href="{{ webpage.link }}"
+                                   class="nav-link {% if webpage.active %}active{% endif %} {% if webpage.disabled %}disabled{% endif %}">
                                     <i class="nav-icon {{ webpage.faIcon }}"></i>
                                     <p>
                                         {{ webpage.displayedName }}
                                         {% if webpage.newWebpage %}
                                             <span class="right badge badge-danger">New</span>
+                                        {% endif %}
+                                        {% if webpage.disabled %}
+                                            <span class="right badge badge-info">PRO</span>
                                         {% endif %}
                                     </p>
                                 </a>
@@ -211,12 +216,15 @@
                                     {% for childWebpage in webpage.children %}
                                         <li class="nav-item">
                                             <a href="{{ childWebpage.link }}"
-                                               class="nav-link {% if childWebpage.active %}active{% endif %}">
+                                               class="nav-link {% if childWebpage.active %}active{% endif %} {% if webpage.disabled %}disabled{% endif %}">
                                                 <i class="{{ childWebpage.faIcon }} nav-icon"></i>
                                                 <p>
                                                     {{ childWebpage.displayedName }}
                                                     {% if childWebpage.newWebpage %}
                                                         <span class="right badge badge-danger">New</span>
+                                                    {% endif %}
+                                                    {% if childWebpage.disabled %}
+                                                        <span class="right badge badge-info">PRO</span>
                                                     {% endif %}
                                                 </p>
                                             </a>
@@ -286,9 +294,18 @@
 
 {% csrf %}
 
-<script src="webjars/AdminLTE/3.0.5/plugins/jquery/jquery.min.js"></script>
-<script src="webjars/AdminLTE/3.0.5/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="webjars/AdminLTE/3.0.5/dist/js/adminlte.min.js"></script>
+<script src="/webjars/AdminLTE/3.0.5/plugins/jquery/jquery.min.js"></script>
+<script src="/webjars/AdminLTE/3.0.5/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/webjars/AdminLTE/3.0.5/dist/js/adminlte.min.js"></script>
+<script src="/webjars/AdminLTE/3.0.5/plugins/sweetalert2/sweetalert2.all.min.js"></script>
+
+<script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-Token': $('input[name="_csrf"]').val()
+        }
+    });
+</script>
 
 {% block javascripts %}
 {% endblock %}

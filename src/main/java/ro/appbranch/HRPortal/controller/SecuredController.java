@@ -59,15 +59,28 @@ public class SecuredController {
                         webpage.setActive(true);
                     }
 
+                    if (loggedUser.getCompany().getLicense().getLevel() < webpage.getLicenseLevel()) {
+                        webpage.setDisabled(true);
+                    }
+
                     webpageMap.put(webpage.getId(), webpage);
                 });
 
         allWebPages.stream()
                 .filter(webpage -> !ObjectUtils.isEmpty(webpage.getParent()))
                 .forEach(webpage -> {
+                    // if parent is disabled do not compute children
+                    if (webpageMap.get(webpage.getParent().getId()).isDisabled()) {
+                        return;
+                    }
+
                     if (getCurrentUri().equals(webpage.getLink())) {
                         webpage.setActive(true);
                         webpageMap.get(webpage.getParent().getId()).setActive(true);
+                    }
+
+                    if (loggedUser.getCompany().getLicense().getLevel() < webpage.getLicenseLevel()) {
+                        webpage.setDisabled(true);
                     }
 
                     webpageMap.get(webpage.getParent().getId()).getChildren().add(webpage);

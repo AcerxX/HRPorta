@@ -16,6 +16,7 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+    private String emailDomain;
     private boolean status;
 
     private String logo;

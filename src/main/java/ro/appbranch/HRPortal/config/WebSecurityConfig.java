@@ -69,10 +69,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication().dataSource(dataSource)
-                .usersByUsernameQuery("SELECT username, password, status FROM user WHERE username=?")
-                .authoritiesByUsernameQuery("SELECT u.username, r.code FROM user u " +
+                .usersByUsernameQuery("SELECT email as username, password, status FROM user WHERE email=?")
+                .authoritiesByUsernameQuery("SELECT u.email as username, r.code FROM user u " +
                         "INNER JOIN role r ON r.id = u.role_id " +
-                        "WHERE u.username=?")
+                        "WHERE u.email=?")
                 .passwordEncoder(bCryptPasswordEncoder());
     }
 }

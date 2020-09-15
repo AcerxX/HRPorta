@@ -19,4 +19,5 @@ public class License {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String code;
+    private Integer level;
 }

@@ -116,6 +116,21 @@
             <artifactId>font-awesome</artifactId>
             <version>5.14.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>select2</artifactId>
+            <version>4.0.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>ttskch__select2-bootstrap4-theme</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>sweetalert2</artifactId>
+            <version>9.17.1</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -126,8 +141,8 @@
                     <groupId>org.junit.vintage</groupId>
                     <artifactId>junit-vintage-engine</artifactId>
                 </exclusion>
-			</exclusions>
-		</dependency>
+            </exclusions>
+        </dependency>
 	</dependencies>
 
 	<build>

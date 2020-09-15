@@ -24,6 +24,7 @@ public class Webpage {
     private String faIcon;
     private boolean status;
     private Integer roleLevel;
+    private Integer licenseLevel;
     private boolean newWebpage = false;
 
     @ManyToOne(targetEntity = Webpage.class)
@@ -34,4 +35,7 @@ public class Webpage {
 
     @Transient
     private boolean active = false;
+
+    @Transient
+    private boolean disabled = false;
 }
