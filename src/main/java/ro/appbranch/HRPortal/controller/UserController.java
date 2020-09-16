@@ -9,6 +9,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ro.appbranch.HRPortal.dto.BaseResponse;
 import ro.appbranch.HRPortal.dto.user.SaveUserRequest;
 import ro.appbranch.HRPortal.repository.JobRepository;
+import ro.appbranch.HRPortal.repository.TeamRepository;
 import ro.appbranch.HRPortal.repository.UserRepository;
 import ro.appbranch.HRPortal.service.UserService;
 
@@ -19,12 +20,14 @@ public class UserController extends SecuredController {
     private final UserService userService;
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
+    private final TeamRepository teamRepository;
 
     @Autowired
-    public UserController(UserService userService, UserRepository userRepository, JobRepository jobRepository) {
+    public UserController(UserService userService, UserRepository userRepository, JobRepository jobRepository, TeamRepository teamRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.jobRepository = jobRepository;
+        this.teamRepository = teamRepository;
     }
 
     @GetMapping("/login")
@@ -49,6 +52,7 @@ public class UserController extends SecuredController {
     public String addUserInterface(Model model) {
         model.addAttribute("allUsers", userRepository.findAllByStatusTrueOrderByFullNameAsc());
         model.addAttribute("allJobs", jobRepository.findAllByOrderByNameAsc());
+        model.addAttribute("allTeams", teamRepository.findAllByOrderByNameAsc());
 
         return "user/addUser";
     }

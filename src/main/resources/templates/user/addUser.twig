@@ -25,6 +25,10 @@
                 theme: 'bootstrap4',
                 tags: true
             });
+            $('#team').select2({
+                theme: 'bootstrap4',
+                tags: true
+            });
 
             $('#hireDate').daterangepicker({
                 singleDatePicker: true,
@@ -42,6 +46,7 @@
                     'responsibleUser': $('#responsibleUser').val(),
                     'role': $('#role').val(),
                     'job': $('#job').val(),
+                    'team': $('#team').val(),
                     'hireDate': $('#hireDate').val(),
                 };
 
@@ -119,6 +124,15 @@
                         <h3 class="card-title">Pozitie in companie</h3>
                     </div>
                     <div class="card-body">
+
+                        <div class="form-group">
+                            <label for="team">Echipa</label>
+                            <select class="form-control" name="team" id="team" required>
+                                {% for team in allTeams %}
+                                    <option>{{ team.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                         <div class="form-group">
                             <label for="responsibleUser">Responsabil</label>
                             <select class="form-control" name="responsibleUser" id="responsibleUser" required>
@@ -145,7 +159,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="job">Job</label>
+                            <label for="job">Pozitie</label>
                             <select class="form-control" name="job" id="job" required>
                                 {% for job in allJobs %}
                                     <option>{{ job.name }}</option>

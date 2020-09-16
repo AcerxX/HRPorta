@@ -18,6 +18,7 @@ public class SaveUserRequest {
     private Integer responsibleUser;
     private Integer role;
     private String job;
+    private String team;
     private String hireDate;
 
     public LocalDate getHireDate() {

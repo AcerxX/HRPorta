@@ -6,9 +6,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ro.appbranch.HRPortal.dto.user.SaveUserRequest;
 import ro.appbranch.HRPortal.entity.Job;
+import ro.appbranch.HRPortal.entity.Team;
 import ro.appbranch.HRPortal.entity.User;
 import ro.appbranch.HRPortal.repository.JobRepository;
 import ro.appbranch.HRPortal.repository.RoleRepository;
+import ro.appbranch.HRPortal.repository.TeamRepository;
 import ro.appbranch.HRPortal.repository.UserRepository;
 
 @Service
@@ -17,16 +19,18 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final RoleRepository roleRepository;
     private final JobRepository jobRepository;
+    private final TeamRepository teamRepository;
 
     @Autowired
     public UserService(
             UserRepository userRepository,
             BCryptPasswordEncoder bCryptPasswordEncoder,
-            RoleRepository roleRepository, JobRepository jobRepository) {
+            RoleRepository roleRepository, JobRepository jobRepository, TeamRepository teamRepository) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.roleRepository = roleRepository;
         this.jobRepository = jobRepository;
+        this.teamRepository = teamRepository;
     }
 
     public void register(User user) {
@@ -80,6 +84,17 @@ public class UserService {
                                     jobRepository.save(job);
 
                                     return job;
+                                })
+                )
+                .setTeam(
+                        teamRepository.findByName(saveUserRequest.getTeam())
+                                .orElseGet(() -> {
+                                    var team = new Team()
+                                            .setName(saveUserRequest.getTeam());
+
+                                    teamRepository.save(team);
+
+                                    return team;
                                 })
                 );
 

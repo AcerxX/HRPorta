@@ -7,6 +7,8 @@ import lombok.experimental.Accessors;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -29,6 +31,9 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY)
     private User responsibleUser;
 
+    @OneToMany(mappedBy = "responsibleUser", fetch = FetchType.LAZY)
+    private List<User> responsibleForUsers = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Company company;
 
@@ -37,6 +42,9 @@ public class User {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Job job;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Team team;
 
     @Transient
     private String passwordConfirm;
