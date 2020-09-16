@@ -88,4 +88,9 @@ public class UserController extends SecuredController {
 
         return "user/userProfile";
     }
+
+    @GetMapping("/my-profile")
+    public String myProfile(Model model, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
+        return userInfo(model, getLoggedUser().getId(), httpServletRequest, redirectAttributes);
+    }
 }
