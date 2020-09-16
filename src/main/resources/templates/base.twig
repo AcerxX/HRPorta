@@ -16,6 +16,7 @@
     <link rel="stylesheet" type="text/css" href="/webjars/AdminLTE/3.0.5/plugins/sweetalert2/sweetalert2.min.css">
     <link rel="stylesheet" type="text/css"
           href="/webjars/AdminLTE/3.0.5/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <link href="/webjars/AdminLTE/3.0.5/plugins/toastr/toastr.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
 
@@ -298,12 +299,33 @@
 <script src="/webjars/AdminLTE/3.0.5/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="/webjars/AdminLTE/3.0.5/dist/js/adminlte.min.js"></script>
 <script src="/webjars/AdminLTE/3.0.5/plugins/sweetalert2/sweetalert2.all.min.js"></script>
+<script src="/webjars/AdminLTE/3.0.5/plugins/toastr/toastr.min.js"></script>
 
 <script>
     $.ajaxSetup({
         headers: {
             'X-CSRF-Token': $('input[name="_csrf"]').val()
         }
+    });
+</script>
+
+<script>
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+    });
+</script>
+
+<script>
+    $("document").ready(function () {
+        {% if redirectErrorMessage is not empty %}
+        Toast.fire({
+            icon: 'error',
+            title: '{{ redirectErrorMessage }}'
+        });
+        {% endif %}
     });
 </script>
 

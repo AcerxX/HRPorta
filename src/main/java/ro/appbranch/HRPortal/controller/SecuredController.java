@@ -19,6 +19,8 @@ import java.util.Map;
 
 @Controller
 public class SecuredController {
+    public static final String ERROR_MESSAGE_FLASH_KEY = "redirectErrorMessage";
+
     @Autowired // This one stays here, not above a constructor
     private UserService userService;
     @Autowired // This one stays here, not above a constructor
