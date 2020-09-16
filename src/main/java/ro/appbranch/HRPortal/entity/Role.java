@@ -22,6 +22,7 @@ public class Role {
     private int id;
 
     private String code;
+    private String name;
     private String group;
     private Integer level;
 }

@@ -13,31 +13,9 @@
     <script src="/webjars/AdminLTE/3.0.5/plugins/moment/moment-with-locales.min.js"></script>
     <script src="/webjars/AdminLTE/3.0.5/plugins/moment/locale/ro.js"></script>
     <script src="/webjars/AdminLTE/3.0.5/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="/assets/js/userForm.js"></script>
     <script>
         $(document).ready(function () {
-            $('#responsibleUser').select2({
-                theme: 'bootstrap4'
-            });
-            $('#role').select2({
-                theme: 'bootstrap4'
-            });
-            $('#job').select2({
-                theme: 'bootstrap4',
-                tags: true
-            });
-            $('#team').select2({
-                theme: 'bootstrap4',
-                tags: true
-            });
-
-            $('#hireDate').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                minYear: 1970,
-                maxYear: {{ "now"|date('YYYY') }},
-                locale: 'ro'
-            });
-
             $('#saveUser').on('click', function () {
                 let data = {
                     'email': $('#email').val(),
@@ -83,99 +61,8 @@
 
 {% block body %}
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">Informatii generale</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="email">Adresa email</label>
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" id="email" required>
-                                <div class="input-group-append">
-                                    <span class="input-group-text">@{{ loggedUser.company.emailDomain }}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="fullName">Nume complet</label>
-                            <input class="form-control" id="fullName" type="text" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="image">Poza (Coming soon)</label>
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="image" disabled>
-                                <label class="custom-file-label" for="image">Alege o poza a angajatului</label>
-                            </div>
-                        </div>
+        {% include "userForm.twig" %}
 
-                        {# <div class="form-group"> #}
-                        {# <label for="resetPassword">Parola</label> #}
-                        {# <button type="button" class="form-control btn btn-danger" id="resetPassword"><i class="fas fa-undo"></i> Reseteaza parola</button> #}
-                        {# </div> #}
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">Pozitie in companie</h3>
-                    </div>
-                    <div class="card-body">
-
-                        <div class="form-group">
-                            <label for="team">Echipa</label>
-                            <select class="form-control" name="team" id="team" required>
-                                {% for team in allTeams %}
-                                    <option>{{ team.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="responsibleUser">Responsabil</label>
-                            <select class="form-control" name="responsibleUser" id="responsibleUser" required>
-                                {% for activeUser in allUsers %}
-                                    <option value="{{ activeUser.id }}">{{ activeUser.fullName }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="role">Rol</label>
-                            <select class="form-control" name="role" id="role" required>
-                                <option value="{{ constant("ro.appbranch.HRPortal.entity.Role.ROLE_ID_USER") }}">
-                                    Membru intr-o echipa
-                                </option>
-                                <option value="{{ constant("ro.appbranch.HRPortal.entity.Role.ROLE_ID_TEAM_LEADER") }}">
-                                    Coordonator de echipa (Team Leader)
-                                </option>
-                                <option value="{{ constant("ro.appbranch.HRPortal.entity.Role.ROLE_ID_HR") }}">
-                                    Membru HR
-                                </option>
-                                <option value="{{ constant("ro.appbranch.HRPortal.entity.Role.ROLE_ID_ADMIN") }}">
-                                    ADMIN
-                                </option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="job">Pozitie</label>
-                            <select class="form-control" name="job" id="job" required>
-                                {% for job in allJobs %}
-                                    <option>{{ job.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="hireDate">Data angajare</label>
-                            <input type="text" id="hireDate" autocomplete="off" class="form-control"
-                                   placeholder="Data angajare"
-                                   name="hireDate">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="row mt-5">
             <div class="col-12 text-right">
                 <button class="btn btn-success" id="saveUser">

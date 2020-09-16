@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 @Setter
 @Accessors(chain = true)
 public class SaveUserRequest {
+    private Integer id;
     private String email;
     private String fullName;
     private String image;

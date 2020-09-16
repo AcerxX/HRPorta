@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import ro.appbranch.HRPortal.dto.user.SaveUserRequest;
 import ro.appbranch.HRPortal.entity.Job;
 import ro.appbranch.HRPortal.entity.Team;
@@ -54,15 +55,22 @@ public class UserService {
     }
 
     public void saveUser(SaveUserRequest saveUserRequest) {
-        var email = saveUserRequest.getEmail() + "@" + this.getLoggedUser().getCompany().getEmailDomain();
+        User user;
+        if (!ObjectUtils.isEmpty(saveUserRequest.getId())) {
+            user = userRepository.findById(saveUserRequest.getId())
+                    .orElseThrow(() -> new RuntimeException("Angajatul cu id-ul " + saveUserRequest.getId() + " nu a fost gasit in baza de date!"));
+        } else {
+            user = new User();
+        }
 
+        var email = saveUserRequest.getEmail() + "@" + this.getLoggedUser().getCompany().getEmailDomain();
         var alreadyExistingUser = userRepository.findByEmail(email);
 
-        if (alreadyExistingUser.isPresent()) {
+        if (alreadyExistingUser.isPresent() && !alreadyExistingUser.get().getId().equals(user.getId())) {
             throw new RuntimeException("Exista deja un angajat cu email-ul " + email);
         }
 
-        var user = new User()
+        user
                 .setEmail(email)
                 .setFullName(saveUserRequest.getFullName())
                 .setHireDate(saveUserRequest.getHireDate())

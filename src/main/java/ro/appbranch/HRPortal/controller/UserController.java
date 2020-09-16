@@ -9,6 +9,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ro.appbranch.HRPortal.dto.BaseResponse;
 import ro.appbranch.HRPortal.dto.user.SaveUserRequest;
 import ro.appbranch.HRPortal.repository.JobRepository;
+import ro.appbranch.HRPortal.repository.RoleRepository;
 import ro.appbranch.HRPortal.repository.TeamRepository;
 import ro.appbranch.HRPortal.repository.UserRepository;
 import ro.appbranch.HRPortal.service.UserService;
@@ -21,13 +22,15 @@ public class UserController extends SecuredController {
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
     private final TeamRepository teamRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public UserController(UserService userService, UserRepository userRepository, JobRepository jobRepository, TeamRepository teamRepository) {
+    public UserController(UserService userService, UserRepository userRepository, JobRepository jobRepository, TeamRepository teamRepository, RoleRepository roleRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.jobRepository = jobRepository;
         this.teamRepository = teamRepository;
+        this.roleRepository = roleRepository;
     }
 
     @GetMapping("/login")
@@ -53,6 +56,7 @@ public class UserController extends SecuredController {
         model.addAttribute("allUsers", userRepository.findAllByStatusTrueOrderByFullNameAsc());
         model.addAttribute("allJobs", jobRepository.findAllByOrderByNameAsc());
         model.addAttribute("allTeams", teamRepository.findAllByOrderByNameAsc());
+        model.addAttribute("allRoles", roleRepository.findAll());
 
         return "user/addUser";
     }
@@ -85,6 +89,10 @@ public class UserController extends SecuredController {
         }
 
         model.addAttribute("user", user.get());
+        model.addAttribute("allUsers", userRepository.findAllByStatusTrueOrderByFullNameAsc());
+        model.addAttribute("allJobs", jobRepository.findAllByOrderByNameAsc());
+        model.addAttribute("allTeams", teamRepository.findAllByOrderByNameAsc());
+        model.addAttribute("allRoles", roleRepository.findAll());
 
         return "user/userProfile";
     }

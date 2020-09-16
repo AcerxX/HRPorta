@@ -7,6 +7,55 @@
 {% endblock %}
 
 {% block javascripts %}
+    <script src="/webjars/select2/4.0.13/js/select2.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/moment/moment-with-locales.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/moment/locale/ro.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="/assets/js/userForm.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#saveUser').on('click', function () {
+                let data = {
+                    'id': {{ user.id }},
+                    'email': $('#email').val(),
+                    'fullName': $('#fullName').val(),
+                    // 'image': $('#image').val(),
+                    'responsibleUser': $('#responsibleUser').val(),
+                    'role': $('#role').val(),
+                    'job': $('#job').val(),
+                    'team': $('#team').val(),
+                    'hireDate': $('#hireDate').val(),
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: '/user/update',
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: function (data) {
+                        Swal.fire(
+                            'Good job!',
+                            'Informatiile angajatului au fost modificate!',
+                            'success'
+                        );
+
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000)
+                    },
+                    error: function (data) {
+                        Swal.fire(
+                            'Eroare',
+                            data.responseJSON.message,
+                            'error'
+                        );
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}
 
 {% block body %}
@@ -103,6 +152,15 @@
                             <div class="tab-pane" id="documents">
                             </div>
                             <div class="tab-pane" id="settings">
+                                {% include "userForm.twig" %}
+
+                                <div class="row mt-3">
+                                    <div class="col-12 text-right">
+                                        <button class="btn btn-success" id="saveUser">
+                                            <i class="fas fa-save"></i> Salveaza modificarile
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
