@@ -1,6 +1,6 @@
 {% extends "../base.twig" %}
 
-{% set title = "Angajatii " ~ (user.company.name) %}
+{% set title = "Angajatii " ~ (loggedUser.company.name) %}
 
 {% block stylesheets %}
     <link href="/webjars/AdminLTE/3.0.5/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet">
@@ -45,7 +45,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <table class="table table-hover table-bordered" id="usersList">
+                        <table class="table table-hover" id="usersList">
                             <thead>
                             <tr>
                                 <th>

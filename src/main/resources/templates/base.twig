@@ -9,7 +9,7 @@
         {% set title = "Another HR Portal" %}
     {% endif %}
 
-    <title>{{ title }}</title>
+    <title>{{ title }} | AHRP </title>
 
     <link rel="stylesheet" type="text/css" href="/webjars/font-awesome/5.14.0/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="/webjars/AdminLTE/3.0.5/dist/css/adminlte.min.css">
@@ -158,10 +158,10 @@
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
         <a href="#" class="brand-link">
-            <img src="{{ user.company.logo }}" alt="{{ user.company.name }} Logo"
+            <img src="{{ loggedUser.company.logo }}" alt="{{ loggedUser.company.name }} Logo"
                  class="brand-image img-circle elevation-3"
                  style="opacity: .8">
-            <span class="brand-text font-weight-light"><b>{{ user.company.name }}</b> HR Portal</span>
+            <span class="brand-text font-weight-light"><b>{{ loggedUser.company.name }}</b> HR Portal</span>
         </a>
 
         <!-- Sidebar -->
@@ -169,11 +169,11 @@
             <!-- Sidebar user panel (optional) -->
             <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                 <div class="image">
-                    <img src="{{ user.image }}" class="img-circle elevation-2"
-                         alt="{{ user.fullName }} Image">
+                    <img src="{{ loggedUser.image }}" class="img-circle elevation-2"
+                         alt="{{ loggedUser.fullName }} Image">
                 </div>
                 <div class="info">
-                    <a href="#" class="d-block">{{ user.fullName }}</a>
+                    <a href="#" class="d-block">{{ loggedUser.fullName }}</a>
                 </div>
             </div>
 
@@ -254,7 +254,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Starter Page</li>
+                            <li class="breadcrumb-item active">CHANGE THIS</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->

@@ -76,8 +76,8 @@ public class UserController extends SecuredController {
             return "redirect:" + lastPage;
         }
 
-        model.addAttribute("allUsers", userRepository.findAllByStatusTrue());
+        model.addAttribute("user", user.get());
 
-        return "user/userInfo";
+        return "user/userProfile";
     }
 }

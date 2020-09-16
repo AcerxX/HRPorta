@@ -31,7 +31,7 @@ public class SecuredController {
         return "?v1";
     }
 
-    @ModelAttribute("user")
+    @ModelAttribute("loggedUser")
     public User getLoggedUser() {
         return userService.getLoggedUser();
     }
