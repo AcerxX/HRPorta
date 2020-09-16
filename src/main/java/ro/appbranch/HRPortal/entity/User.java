@@ -26,14 +26,17 @@ public class User {
     private boolean status = true;
     private LocalDate hireDate;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     private User responsibleUser;
 
-    @ManyToOne(targetEntity = Company.class)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Company company;
 
-    @ManyToOne(targetEntity = Role.class)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Role role;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Job job;
 
     @Transient
     private String passwordConfirm;

@@ -7,20 +7,14 @@ import lombok.experimental.Accessors;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "job")
 @Getter
 @Setter
 @Accessors(chain = true)
-@Table(name = "company")
-public class Company {
+public class Job {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
+
     private String name;
-    private String emailDomain;
-    private boolean status;
-
-    private String logo;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private License license;
 }

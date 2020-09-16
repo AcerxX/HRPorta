@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ro.appbranch.HRPortal.dto.BaseResponse;
 import ro.appbranch.HRPortal.dto.user.SaveUserRequest;
+import ro.appbranch.HRPortal.repository.JobRepository;
 import ro.appbranch.HRPortal.repository.UserRepository;
 import ro.appbranch.HRPortal.service.UserService;
 
@@ -17,11 +18,13 @@ import javax.servlet.http.HttpServletRequest;
 public class UserController extends SecuredController {
     private final UserService userService;
     private final UserRepository userRepository;
+    private final JobRepository jobRepository;
 
     @Autowired
-    public UserController(UserService userService, UserRepository userRepository) {
+    public UserController(UserService userService, UserRepository userRepository, JobRepository jobRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
+        this.jobRepository = jobRepository;
     }
 
     @GetMapping("/login")
@@ -37,14 +40,15 @@ public class UserController extends SecuredController {
 
     @GetMapping("/user/list")
     public String userList(Model model) {
-        model.addAttribute("allUsers", userRepository.findAllByStatusTrue());
+        model.addAttribute("allUsers", userRepository.findAllByStatusTrueOrderByFullNameAsc());
 
         return "user/userList";
     }
 
     @GetMapping("/user/add")
     public String addUserInterface(Model model) {
-        model.addAttribute("allUsers", userRepository.findAllByStatusTrue());
+        model.addAttribute("allUsers", userRepository.findAllByStatusTrueOrderByFullNameAsc());
+        model.addAttribute("allJobs", jobRepository.findAllByOrderByNameAsc());
 
         return "user/addUser";
     }

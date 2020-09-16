@@ -5,8 +5,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ro.appbranch.HRPortal.dto.user.SaveUserRequest;
+import ro.appbranch.HRPortal.entity.Job;
 import ro.appbranch.HRPortal.entity.User;
-import ro.appbranch.HRPortal.repository.CompanyRepository;
+import ro.appbranch.HRPortal.repository.JobRepository;
 import ro.appbranch.HRPortal.repository.RoleRepository;
 import ro.appbranch.HRPortal.repository.UserRepository;
 
@@ -14,18 +15,18 @@ import ro.appbranch.HRPortal.repository.UserRepository;
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final CompanyRepository companyRepository;
     private final RoleRepository roleRepository;
+    private final JobRepository jobRepository;
 
     @Autowired
     public UserService(
             UserRepository userRepository,
             BCryptPasswordEncoder bCryptPasswordEncoder,
-            CompanyRepository companyRepository, RoleRepository roleRepository) {
+            RoleRepository roleRepository, JobRepository jobRepository) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.companyRepository = companyRepository;
         this.roleRepository = roleRepository;
+        this.jobRepository = jobRepository;
     }
 
     public void register(User user) {
@@ -69,6 +70,17 @@ public class UserService {
                 .setRole(
                         roleRepository.findById(saveUserRequest.getRole())
                                 .orElseThrow(() -> new RuntimeException("Rolul selectat nu a fost gasit in baza de date! Contactati echipa de support."))
+                )
+                .setJob(
+                        jobRepository.findByName(saveUserRequest.getJob())
+                                .orElseGet(() -> {
+                                    var job = new Job()
+                                            .setName(saveUserRequest.getJob());
+
+                                    jobRepository.save(job);
+
+                                    return job;
+                                })
                 );
 
         userRepository.save(user);

@@ -55,16 +55,20 @@
                                     Nume complet
                                 </th>
                                 <th>
-                                    Email
+                                    Job
                                 </th>
                                 <th>
                                     Responsabil
                                 </th>
                                 <th>
-                                    Rol
+                                    Data angajare
                                 </th>
                                 <th>
-                                    Data angajare
+                                    Rol
+                                </th>
+
+                                <th>
+                                    Email
                                 </th>
                             </tr>
                             </thead>
@@ -78,16 +82,19 @@
                                         {{ activeUser.fullName }}
                                     </td>
                                     <td>
-                                        {{ activeUser.email }}
+                                        {{ activeUser.job.name }}
                                     </td>
                                     <td>
                                         {{ activeUser.responsibleUser.fullName }}
                                     </td>
+                                    <td class="text-center">
+                                        {{ activeUser.getHireDateAsString }}
+                                    </td>
                                     <td>
                                         {{ activeUser.role.code }}
                                     </td>
-                                    <td class="text-center">
-                                        {{ activeUser.getHireDateAsString }}
+                                    <td>
+                                        {{ activeUser.email }}
                                     </td>
                                 </tr>
                             {% endfor %}

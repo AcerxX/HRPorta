@@ -21,6 +21,10 @@
             $('#role').select2({
                 theme: 'bootstrap4'
             });
+            $('#job').select2({
+                theme: 'bootstrap4',
+                tags: true
+            });
 
             $('#hireDate').daterangepicker({
                 singleDatePicker: true,
@@ -37,6 +41,7 @@
                     // 'image': $('#image').val(),
                     'responsibleUser': $('#responsibleUser').val(),
                     'role': $('#role').val(),
+                    'job': $('#job').val(),
                     'hireDate': $('#hireDate').val(),
                 };
 
@@ -126,16 +131,25 @@
                             <label for="role">Rol</label>
                             <select class="form-control" name="role" id="role" required>
                                 <option value="{{ constant("ro.appbranch.HRPortal.entity.Role.ROLE_ID_USER") }}">
-                                    Angajat
+                                    Membru intr-o echipa
                                 </option>
                                 <option value="{{ constant("ro.appbranch.HRPortal.entity.Role.ROLE_ID_TEAM_LEADER") }}">
-                                    Team Leader
+                                    Coordonator de echipa (Team Leader)
                                 </option>
-                                <option value="{{ constant("ro.appbranch.HRPortal.entity.Role.ROLE_ID_HR") }}">HR
+                                <option value="{{ constant("ro.appbranch.HRPortal.entity.Role.ROLE_ID_HR") }}">
+                                    Membru HR
                                 </option>
                                 <option value="{{ constant("ro.appbranch.HRPortal.entity.Role.ROLE_ID_ADMIN") }}">
                                     ADMIN
                                 </option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="job">Job</label>
+                            <select class="form-control" name="job" id="job" required>
+                                {% for job in allJobs %}
+                                    <option>{{ job.name }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="form-group">

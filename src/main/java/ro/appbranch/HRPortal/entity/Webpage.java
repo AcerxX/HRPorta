@@ -27,7 +27,7 @@ public class Webpage {
     private Integer licenseLevel;
     private boolean newWebpage = false;
 
-    @ManyToOne(targetEntity = Webpage.class)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Webpage parent;
 
     @Transient
