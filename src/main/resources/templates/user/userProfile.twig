@@ -1,6 +1,7 @@
 {% extends "../base.twig" %}
 
 {% set title = (user.fullName) %}
+{% set hideHeader = true %}
 
 {% block stylesheets %}
 {% endblock %}
@@ -9,7 +10,7 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container-fluid">
+    <div class="container-fluid pt-3">
         <div class="row">
             <div class="col-md-3">
                 <!-- Profile Image -->
