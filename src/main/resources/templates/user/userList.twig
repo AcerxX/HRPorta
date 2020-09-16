@@ -1,0 +1,82 @@
+{% extends "../base.twig" %}
+
+{% set title = "Angajatii " ~ (user.company.name) %}
+
+{% block stylesheets %}
+    <link href="/webjars/AdminLTE/3.0.5/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link href="/webjars/AdminLTE/3.0.5/plugins/datatables-responsive/css/responsive.bootstrap4.min.css"
+          rel="stylesheet">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/webjars/AdminLTE/3.0.5/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#usersList').DataTable({
+                "responsive": true,
+                "language": {
+                    url: "/assets/datatables_translation/Romanian.json"
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-hover table-bordered" id="usersList">
+                            <thead>
+                            <tr>
+                                <th>
+                                    Nume complet
+                                </th>
+                                <th>
+                                    Email
+                                </th>
+                                <th>
+                                    Responsabil
+                                </th>
+                                <th>
+                                    Rol
+                                </th>
+                                <th>
+                                    Data angajare
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for activeUser in allUsers %}
+                                <tr>
+                                    <td>
+                                        {{ activeUser.fullName }}
+                                    </td>
+                                    <td>
+                                        {{ activeUser.email }}
+                                    </td>
+                                    <td>
+                                        {{ activeUser.responsibleUser.fullName }}
+                                    </td>
+                                    <td>
+                                        {{ activeUser.role.code }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ activeUser.getHireDateAsString }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

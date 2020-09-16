@@ -34,6 +34,13 @@ public class UserController extends SecuredController {
         return "login";
     }
 
+    @GetMapping("/user/list")
+    public String userList(Model model) {
+        model.addAttribute("allUsers", userRepository.findAllByStatusTrue());
+
+        return "user/userList";
+    }
+
     @GetMapping("/user/add")
     public String addUserInterface(Model model) {
         model.addAttribute("allUsers", userRepository.findAllByStatusTrue());

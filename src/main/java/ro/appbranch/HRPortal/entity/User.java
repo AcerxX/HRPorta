@@ -6,6 +6,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Getter
@@ -36,4 +37,8 @@ public class User {
 
     @Transient
     private String passwordConfirm;
+
+    public String getHireDateAsString() {
+        return this.hireDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    }
 }
