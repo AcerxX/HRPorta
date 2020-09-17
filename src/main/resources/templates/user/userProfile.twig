@@ -4,6 +4,9 @@
 {% set hideHeader = true %}
 
 {% block stylesheets %}
+    <link href="/webjars/select2/4.0.13/css/select2.min.css" rel="stylesheet"/>
+    <link href="/webjars/ttskch__select2-bootstrap4-theme/1.4.0/dist/select2-bootstrap4.min.css" rel="stylesheet"/>
+    <link href="/webjars/AdminLTE/3.0.5/plugins/daterangepicker/daterangepicker.css" rel="stylesheet"/>
 {% endblock %}
 
 {% block javascripts %}
@@ -136,22 +139,22 @@
                 <div class="card">
                     <div class="card-header p-2">
                         <ul class="nav nav-pills">
-                            <li class="nav-item"><a class="nav-link active" data-toggle="tab"
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab"
                                                     href="#info">Informatii</a>
                             </li>
                             <li class="nav-item"><a class="nav-link" data-toggle="tab"
                                                     href="#documents">Documente</a></li>
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab"
+                            <li class="nav-item"><a class="nav-link active" data-toggle="tab"
                                                     href="#settings">Setari</a></li>
                         </ul>
                     </div>
                     <div class="card-body">
                         <div class="tab-content">
-                            <div class="active tab-pane" id="info">
+                            <div class="tab-pane" id="info">
                             </div>
                             <div class="tab-pane" id="documents">
                             </div>
-                            <div class="tab-pane" id="settings">
+                            <div class="active tab-pane" id="settings">
                                 {% include "userForm.twig" %}
 
                                 <div class="row mt-3">
