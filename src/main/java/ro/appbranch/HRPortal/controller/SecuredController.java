@@ -3,6 +3,7 @@ package ro.appbranch.HRPortal.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 
 @Controller
+@ControllerAdvice
 public class SecuredController {
     public static final String ERROR_MESSAGE_FLASH_KEY = "redirectErrorMessage";
 

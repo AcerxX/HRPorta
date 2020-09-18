@@ -1,0 +1,156 @@
+{% extends "../base.twig" %}
+
+{% set title = (user.fullName) %}
+{% set hideHeader = true %}
+
+{% block stylesheets %}
+    <link href="/webjars/select2/4.0.13/css/select2.min.css" rel="stylesheet"/>
+    <link href="/webjars/ttskch__select2-bootstrap4-theme/1.4.0/dist/select2-bootstrap4.min.css" rel="stylesheet"/>
+    <link href="/webjars/AdminLTE/3.0.5/plugins/daterangepicker/daterangepicker.css" rel="stylesheet"/>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/webjars/select2/4.0.13/js/select2.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/moment/moment-with-locales.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/moment/locale/ro.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/daterangepicker/daterangepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        })
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid pt-3">
+        <div class="row">
+            <div class="col-md-3">
+                <!-- Profile Image -->
+                <div class="card card-primary card-outline">
+                    <div class="card-body box-profile">
+                        <div class="text-center">
+                            <img alt="User profile picture"
+                                 class="profile-user-img img-fluid img-circle"
+                                 src="{{ company.logo }}">
+                        </div>
+
+                        <h3 class="profile-username text-center">{{ company.name }}</h3>
+
+                        <p class="text-muted text-center">@{{ company.emailDomain }}</p>
+
+                        <ul class="list-group list-group-unbordered mb-3">
+                            <li class="list-group-item">
+                                <b>Nr. angajati</b> <a class="float-right">{{ company.users.size }}</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>#WFH{{ "now"|date("MMMM") }}</b> <a class="float-right">10</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+                <!-- About Me Box -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Info</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <strong><i class="fas fa-user-tie"></i> CEO</strong>
+
+                        <p class="text-muted">
+                            {% for ceo in company.getCEOUsers %}
+                                {{ ceo.fullName }}
+                                <br>
+                            {% endfor %}
+                        </p>
+
+                        <hr>
+
+                        <strong><i class="fas fa-users"></i> HR</strong>
+
+                        <p class="text-muted">
+                            {% for ceo in company.getHRUsers %}
+                                {{ ceo.fullName }}
+                                <br>
+                            {% endfor %}
+                        </p>
+
+                        <hr>
+
+                        <strong><i class="fas fa-glass-cheers"></i> Colegi</strong>
+
+                        <p class="text-muted">
+                            {% for coleague in user.responsibleUser.responsibleForUsers %}
+                                {% if coleague.id != user.id %}
+                                    {{ coleague.fullName }}
+                                    <br>
+                                {% endif %}
+                            {% endfor %}
+                        </p>
+
+                        <hr>
+
+                        <strong><i class="fas fa-calendar-alt"></i> In firma din</strong>
+
+                        <p class="text-muted">
+                            {{ user.getHireDateAsString }}
+                        </p>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header p-2">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab"
+                                                    href="#info">Informatii</a>
+                            </li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab"
+                                                    href="#documents">Documente</a></li>
+                            <li class="nav-item"><a class="nav-link active" data-toggle="tab"
+                                                    href="#settings">Setari</a></li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div class="tab-pane" id="info">
+                            </div>
+                            <div class="tab-pane" id="documents">
+                            </div>
+                            <div class="active tab-pane" id="settings">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="email">Nume firma</label>
+                                        <input type="text" class="form-control" id="email" required
+                                               {% if company is not empty %}value="{{ company.name }}"{% endif %}>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="email">
+                                            Domeniu email
+                                            <i class="fas fa-exclamation-triangle"
+                                               data-toggle="tooltip"
+                                               data-placement="right"
+                                               title="Atentie! Modificarea acestui camp va duce la MODIFICAREA TUTUROR email-urilor angajatilor {{ company.name }}!"></i>
+                                        </label>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">@</span>
+                                            </div>
+                                            <input type="text" class="form-control" id="email" required
+                                                   {% if company is not empty %}value="{{ company.emailDomain }}"{% endif %}>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
