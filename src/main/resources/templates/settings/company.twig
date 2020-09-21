@@ -17,6 +17,39 @@
     <script>
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
+
+            $('#saveCompany').on('click', function () {
+                let data = {
+                    'emailDomain': $('#emailDomain').val(),
+                    'name': $('#name').val()
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: '/company/update',
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: function (data) {
+                        Swal.fire(
+                            'Good job!',
+                            'Informatiile companiei tale au fost modificate!',
+                            'success'
+                        );
+
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000)
+                    },
+                    error: function (data) {
+                        Swal.fire(
+                            'Eroare',
+                            data.responseJSON.message,
+                            'error'
+                        );
+                    }
+                });
+            });
         })
     </script>
 {% endblock %}
@@ -126,24 +159,37 @@
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label for="email">Nume firma</label>
-                                        <input type="text" class="form-control" id="email" required
+                                        <input type="text" class="form-control" id="name" required
                                                {% if company is not empty %}value="{{ company.name }}"{% endif %}>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label for="email">
-                                            Domeniu email
-                                            <i class="fas fa-exclamation-triangle"
+                                        <div class="w-100">
+                                            <label for="email">
+                                                Domeniu email
+                                            </label>
+                                            <i class="float-right mr-3 text-warning fas fa-exclamation-triangle"
                                                data-toggle="tooltip"
                                                data-placement="right"
-                                               title="Atentie! Modificarea acestui camp va duce la MODIFICAREA TUTUROR email-urilor angajatilor {{ company.name }}!"></i>
-                                        </label>
+                                               title="Atentie! Modificarea acestui camp va duce la MODIFICAREA TUTUROR email-urilor angajatilor {{ company.name }} si delogarea acestora!"></i>
+                                        </div>
+
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">@</span>
                                             </div>
-                                            <input type="text" class="form-control" id="email" required
+                                            <input type="text" class="form-control" id="emailDomain" required
                                                    {% if company is not empty %}value="{{ company.emailDomain }}"{% endif %}>
+                                            <small id="emailDomainHelp" class="form-text text-muted">
+
+                                            </small>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-12 text-right">
+                                        <button class="btn btn-success" id="saveCompany">
+                                            <i class="fas fa-save"></i> Salveaza modificarile
+                                        </button>
                                     </div>
                                 </div>
                             </div>

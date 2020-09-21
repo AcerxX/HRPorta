@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends PagingAndSortingRepository<User, Integer> {
-    User findByEmailAndStatusTrue(String email);
+    Optional<User> findByEmailAndStatusTrue(String email);
 
     List<User> findAllByStatusTrueOrderByFullNameAsc();
 

@@ -3,8 +3,11 @@ package ro.appbranch.HRPortal.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import ro.appbranch.HRPortal.dto.user.SaveUserRequest;
 import ro.appbranch.HRPortal.entity.Job;
 import ro.appbranch.HRPortal.entity.Team;
@@ -13,6 +16,9 @@ import ro.appbranch.HRPortal.repository.JobRepository;
 import ro.appbranch.HRPortal.repository.RoleRepository;
 import ro.appbranch.HRPortal.repository.TeamRepository;
 import ro.appbranch.HRPortal.repository.UserRepository;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -26,7 +32,10 @@ public class UserService {
     public UserService(
             UserRepository userRepository,
             BCryptPasswordEncoder bCryptPasswordEncoder,
-            RoleRepository roleRepository, JobRepository jobRepository, TeamRepository teamRepository) {
+            RoleRepository roleRepository,
+            JobRepository jobRepository,
+            TeamRepository teamRepository
+    ) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.roleRepository = roleRepository;
@@ -44,14 +53,19 @@ public class UserService {
     }
 
     public User getLoggedUser() {
-        User user = null;
-
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() != "anonymousUser") {
-            user = userRepository.findByEmailAndStatusTrue(((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername());
+        if (authentication == null || authentication.getPrincipal() == "anonymousUser") {
+            throw new RuntimeException("Utilizatorul nu este logat!");
         }
 
-        return user;
+        return userRepository.findByEmailAndStatusTrue(((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername())
+                .orElseThrow(() -> {
+                    HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+                    new SecurityContextLogoutHandler().logout(request, null, authentication);
+                    SecurityContextHolder.getContext().setAuthentication(null);
+
+                    throw new RuntimeException("Utilizatorul nu mai este activ in baza de date!");
+                });
     }
 
     public void saveUser(SaveUserRequest saveUserRequest) {
@@ -107,5 +121,11 @@ public class UserService {
                 );
 
         userRepository.save(user);
+    }
+
+    public void changeEmailDomainForUsers(List<User> userList, String newEmailDomain) {
+        userList.forEach(user -> user.setEmail(user.getEmail().split("@")[0] + "@" + newEmailDomain));
+
+        userRepository.saveAll(userList);
     }
 }

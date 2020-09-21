@@ -297,6 +297,11 @@
 </div>
 
 {% csrf %}
+{% if loggedUser is empty %}
+    <script>
+        window.location.reload();
+    </script>
+{% endif %}
 
 <script src="/webjars/AdminLTE/3.0.5/plugins/jquery/jquery.min.js"></script>
 <script src="/webjars/AdminLTE/3.0.5/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>

@@ -35,7 +35,11 @@ public class SecuredController {
 
     @ModelAttribute("loggedUser")
     public User getLoggedUser() {
-        return userService.getLoggedUser();
+        try {
+            return userService.getLoggedUser();
+        } catch (Throwable t) {
+            return null;
+        }
     }
 
     @ModelAttribute("currentUri")
