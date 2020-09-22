@@ -144,7 +144,7 @@
                                                     href="#info">Informatii</a>
                             </li>
                             <li class="nav-item"><a class="nav-link" data-toggle="tab"
-                                                    href="#documents">Documente</a></li>
+                                                    href="#companyRules">Reguli</a></li>
                             <li class="nav-item"><a class="nav-link active" data-toggle="tab"
                                                     href="#settings">Setari</a></li>
                         </ul>
@@ -153,7 +153,8 @@
                         <div class="tab-content">
                             <div class="tab-pane" id="info">
                             </div>
-                            <div class="tab-pane" id="documents">
+                            <div class="tab-pane" id="companyRules">
+
                             </div>
                             <div class="active tab-pane" id="settings">
                                 <div class="row">
@@ -170,7 +171,7 @@
                                             <i class="float-right mr-3 text-warning fas fa-exclamation-triangle"
                                                data-toggle="tooltip"
                                                data-placement="right"
-                                               title="Atentie! Modificarea acestui camp va duce la MODIFICAREA TUTUROR email-urilor angajatilor {{ company.name }} si delogarea acestora!"></i>
+                                               title=""></i>
                                         </div>
 
                                         <div class="input-group mb-3">
@@ -180,7 +181,9 @@
                                             <input type="text" class="form-control" id="emailDomain" required
                                                    {% if company is not empty %}value="{{ company.emailDomain }}"{% endif %}>
                                             <small id="emailDomainHelp" class="form-text text-muted">
-
+                                                <i class="fas fa-exclamation-triangle"></i> Modificarea acestui camp va
+                                                duce la MODIFICAREA TUTUROR email-urilor angajatilor {{ company.name }}
+                                                si delogarea acestora!
                                             </small>
                                         </div>
                                     </div>
