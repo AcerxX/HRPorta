@@ -7,6 +7,9 @@
     <link href="/webjars/select2/4.0.13/css/select2.min.css" rel="stylesheet"/>
     <link href="/webjars/ttskch__select2-bootstrap4-theme/1.4.0/dist/select2-bootstrap4.min.css" rel="stylesheet"/>
     <link href="/webjars/AdminLTE/3.0.5/plugins/daterangepicker/daterangepicker.css" rel="stylesheet"/>
+    <link href="/webjars/AdminLTE/3.0.5/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link href="/webjars/AdminLTE/3.0.5/plugins/datatables-responsive/css/responsive.bootstrap4.min.css"
+          rel="stylesheet">
 {% endblock %}
 
 {% block javascripts %}
@@ -14,6 +17,12 @@
     <script src="/webjars/AdminLTE/3.0.5/plugins/moment/moment-with-locales.min.js"></script>
     <script src="/webjars/AdminLTE/3.0.5/plugins/moment/locale/ro.js"></script>
     <script src="/webjars/AdminLTE/3.0.5/plugins/daterangepicker/daterangepicker.js"></script>
+
+    <script src="/webjars/AdminLTE/3.0.5/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+
     <script>
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
@@ -49,6 +58,19 @@
                         );
                     }
                 });
+            });
+
+            $('#rulesTable').DataTable({
+                "paging": false,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": false,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "language": {
+                    url: "/assets/datatables_translation/Romanian.json"
+                }
             });
         })
     </script>
@@ -143,9 +165,9 @@
                             <li class="nav-item"><a class="nav-link" data-toggle="tab"
                                                     href="#info">Informatii</a>
                             </li>
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab"
-                                                    href="#companyRules">Reguli</a></li>
                             <li class="nav-item"><a class="nav-link active" data-toggle="tab"
+                                                    href="#companyRules">Reguli</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab"
                                                     href="#settings">Setari</a></li>
                         </ul>
                     </div>
@@ -153,10 +175,53 @@
                         <div class="tab-content">
                             <div class="tab-pane" id="info">
                             </div>
-                            <div class="tab-pane" id="companyRules">
+                            <div class="tab-pane active" id="companyRules">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="callout callout-info text-muted">
+                                            <p>Aici se vor seta toate regulile de acordare a diverselor tipuri de zile
+                                                (CO, WHF).</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <table class="table table-striped" id="rulesTable">
+                                            <thead>
+                                            <tr>
+                                                <th>
+                                                    Actiune
+                                                </th>
+                                                <th>
+                                                    Nr zile
+                                                </th>
+                                                <th>
+                                                    Tip zile
+                                                </th>
+                                                <th>
+                                                    Momentul activarii
+                                                </th>
+                                                <th>
+                                                    Extra
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
 
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 text-right">
+                                        <button class="btn btn-success" data-target="#modal-add-rule"
+                                                data-toggle="modal" type="button">
+                                            <i class="fas fa-plus"></i> Adauga regula noua
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="active tab-pane" id="settings">
+                            <div class="tab-pane" id="settings">
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label for="email">Nume firma</label>
@@ -200,6 +265,44 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="modal fade" id="modal-add-rule">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Adauga o regula noua</h4>
+                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <dl class="row">
+                            <dt class="col-sm-4">Description lists</dt>
+                            <dd class="col-sm-8">A description list is perfect for defining terms.</dd>
+                            <dt class="col-sm-4">Euismod</dt>
+                            <dd class="col-sm-8">Vestibulum id ligula porta felis euismod semper eget lacinia
+                                odio sem nec elit.
+                            </dd>
+                            <dd class="col-sm-8 offset-sm-4">Donec id elit non mi porta gravida at eget metus.
+                            </dd>
+                            <dt class="col-sm-4">Malesuada porta</dt>
+                            <dd class="col-sm-8">Etiam porta sem malesuada magna mollis euismod.</dd>
+                            <dt class="col-sm-4">Felis euismod semper eget lacinia</dt>
+                            <dd class="col-sm-8">Fusce dapibus, tellus ac cursus commodo, tortor mauris
+                                condimentum nibh, ut fermentum massa justo
+                                sit amet risus.
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button class="btn btn-default" data-dismiss="modal" type="button">Close</button>
+                        <button class="btn btn-primary" type="button">Save changes</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
         </div>
     </div>
 {% endblock %}
