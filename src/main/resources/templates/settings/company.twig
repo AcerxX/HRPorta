@@ -25,8 +25,6 @@
 
     <script>
         $(document).ready(function () {
-            $('[data-toggle="tooltip"]').tooltip();
-
             $('#saveCompany').on('click', function () {
                 let data = {
                     'emailDomain': $('#emailDomain').val(),
@@ -66,11 +64,69 @@
                 "searching": false,
                 "ordering": false,
                 "info": true,
-                "autoWidth": false,
+                // "autoWidth": false,
                 "responsive": true,
                 "language": {
                     url: "/assets/datatables_translation/Romanian.json"
                 }
+            });
+
+            $('#modal-add-rule').on('show.bs.modal', function () {
+                $('#action').select2({
+                    theme: 'bootstrap4',
+                    minimumResultsForSearch: -1
+                });
+                $('#timeOff').select2({
+                    theme: 'bootstrap4',
+                });
+                $('#executionMoment').select2({
+                    theme: 'bootstrap4',
+                    minimumResultsForSearch: -1
+                });
+                $('#certainUsersList').select2({
+                    theme: 'bootstrap4',
+                });
+            });
+
+            $('#saveCompanyRule').on('click', function () {
+                let data = {
+                    'ruleId': $('#ruleId').val(),
+                    'timeOffId': $('#timeOff').val(),
+                    'action': $('#action').val(),
+                    'daysNumber': $('#daysNumber').val(),
+                    'executionMoment': $('#executionMoment').val(),
+                    'cumulateYears': $('#cumulateYears').is(':checked'),
+                };
+
+                if ($("#certainUsers").is(':checked')) {
+                    data['userIds'] = $('#certainUsersList').val();
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: '/company/update-rules',
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: function (data) {
+                        Swal.fire(
+                            'Good job!',
+                            'Informatiile companiei tale au fost modificate!',
+                            'success'
+                        );
+
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000)
+                    },
+                    error: function (data) {
+                        Swal.fire(
+                            'Eroare',
+                            data.responseJSON.message,
+                            'error'
+                        );
+                    }
+                });
             });
         })
     </script>
@@ -192,7 +248,7 @@
                                                 <th>
                                                     Actiune
                                                 </th>
-                                                <th>
+                                                <th class="text-center">
                                                     Nr zile
                                                 </th>
                                                 <th>
@@ -202,12 +258,59 @@
                                                     Momentul activarii
                                                 </th>
                                                 <th>
-                                                    Extra
+                                                    Optiuni avansate
                                                 </th>
                                             </tr>
                                             </thead>
                                             <tbody>
+                                            {% for companyRule in company.companyRules %}
+                                                <tr>
+                                                    <td>
+                                                        {% if companyRule.action == 1 %}
+                                                            Se adauga
+                                                        {% else %}
+                                                            Se seteaza
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {{ companyRule.daysNumber }}
+                                                    </td>
+                                                    <td>
+                                                        {{ companyRule.timeOff.name }}
+                                                    </td>
+                                                    <td>
+                                                        {% if companyRule.executionMoment == 1 %}
+                                                            La inceputul fiecarui an
+                                                        {% else %}
+                                                            La inceputul fiecarei luni
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <ul>
+                                                            {% if companyRule.cumulateYears %}
+                                                                <li>Se acorda cate {{ companyRule.daysNumber }} zi(le)
+                                                                    pentru fiecare an petrecut in firma.
+                                                                </li>
+                                                            {% endif %}
 
+                                                            {% if companyRule.users is empty %}
+                                                                <li>Se aplica tuturor angajatilor
+                                                                    din {{ companyRule.company.name }}.
+                                                                </li>
+                                                            {% else %}
+                                                                <li>Se aplica urmatorilor angajati:
+
+                                                                    <ul>
+                                                                        {% for user in companyRule.users %}
+                                                                            <li>{{ user.fullName }}</li>
+                                                                        {% endfor %}
+                                                                    </ul>
+                                                                </li>
+                                                            {% endif %}
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
                                             </tbody>
                                         </table>
                                     </div>
@@ -268,7 +371,7 @@
         </div>
 
         <div class="modal fade" id="modal-add-rule">
-            <div class="modal-dialog modal-xl">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title">Adauga o regula noua</h4>
@@ -276,28 +379,87 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body" id="accordion">
+                        <input class="d-none" id="ruleId" type="text" value="">
                         <dl class="row">
-                            <dt class="col-sm-4">Description lists</dt>
-                            <dd class="col-sm-8">A description list is perfect for defining terms.</dd>
-                            <dt class="col-sm-4">Euismod</dt>
-                            <dd class="col-sm-8">Vestibulum id ligula porta felis euismod semper eget lacinia
-                                odio sem nec elit.
+                            <dt class="col-sm-4"><label for="action">Actiunea dorita</label></dt>
+                            <dd class="col-sm-8">
+                                <select class="form-control" id="action">
+                                    <option value="1">Se adauga</option>
+                                    <option value="2">Se seteaza</option>
+                                </select>
                             </dd>
-                            <dd class="col-sm-8 offset-sm-4">Donec id elit non mi porta gravida at eget metus.
+
+                            <dt class="col-sm-4"><label for="daysNumber">Numar zile</label></dt>
+                            <dd class="col-sm-8">
+                                <div class="input-group">
+                                    <input class="form-control" id="daysNumber" type="number" min="1" placeholder="21">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">zi(le)</div>
+                                    </div>
+                                </div>
                             </dd>
-                            <dt class="col-sm-4">Malesuada porta</dt>
-                            <dd class="col-sm-8">Etiam porta sem malesuada magna mollis euismod.</dd>
-                            <dt class="col-sm-4">Felis euismod semper eget lacinia</dt>
-                            <dd class="col-sm-8">Fusce dapibus, tellus ac cursus commodo, tortor mauris
-                                condimentum nibh, ut fermentum massa justo
-                                sit amet risus.
+
+                            <dt class="col-sm-4">Tip</dt>
+                            <dd class="col-sm-8">
+                                <select class="form-control" id="timeOff">
+                                    {% for timeOff in timeOffList %}
+                                        <option value="{{ timeOff.id }}">{{ timeOff.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </dd>
+
+                            <dt class="col-sm-4">Cand se executa regula</dt>
+                            <dd class="col-sm-8">
+                                <select class="form-control" id="executionMoment">
+                                    <option value="1">La inceputul fiecarui an</option>
+                                    <option value="2">La inceputul fiecarei luni</option>
+                                </select>
+                            </dd>
+
+                            <dt class="col-sm-4">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" class="collapsed"
+                                   aria-expanded="false">
+                                    Optiuni avansate...
+                                </a>
+                            </dt>
+                            <dd class="col-sm-8">
+                                <div id="collapseOne" class="panel-collapse in collapse" style="">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                       id="cumulateYears">
+                                                <label class="form-check-label" for="cumulateYears">
+                                                    Pentru fiecare an petrecut in firma
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                       id="certainUsers">
+                                                <label class="form-check-label" for="certainUsers">
+                                                    Se aplica numai urmatoarelor persoane:
+                                                </label>
+                                                <select class="form-control" id="certainUsersList" multiple="multiple"
+                                                        title="Lista useri">
+                                                    {% for user in loggedUser.company.users %}
+                                                        <option value="{{ user.id }}">{{ user.fullName }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </dd>
                         </dl>
                     </div>
                     <div class="modal-footer justify-content-between">
-                        <button class="btn btn-default" data-dismiss="modal" type="button">Close</button>
-                        <button class="btn btn-primary" type="button">Save changes</button>
+                        <button class="btn btn-default" data-dismiss="modal" type="button">Inchide</button>
+                        <button class="btn btn-primary" type="button" id="saveCompanyRule">Salveaza regula</button>
                     </div>
                 </div>
                 <!-- /.modal-content -->

@@ -31,6 +31,9 @@ public class Company {
     @OneToMany(mappedBy = "company")
     private List<User> users = new ArrayList<>();
 
+    @OneToMany(mappedBy = "company")
+    private List<CompanyRule> companyRules = new ArrayList<>();
+
     public List<User> getCEOUsers() {
         return this.users.stream()
                 .filter(user -> ObjectUtils.isEmpty(user.getResponsibleUser()))
