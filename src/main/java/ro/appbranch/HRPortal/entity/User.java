@@ -34,6 +34,9 @@ public class User {
     @OneToMany(mappedBy = "responsibleUser", fetch = FetchType.LAZY)
     private List<User> responsibleForUsers = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<UserTimeOffInfo> userTimeOffInfoList = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Company company;
 
