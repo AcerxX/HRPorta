@@ -22,5 +22,10 @@ public class UserTimeOffInfo {
     @ManyToOne(fetch = FetchType.LAZY)
     private TimeOff timeOff;
 
-    private Double currentNumberOfDays;
+    private Double currentNumberOfDays = 0.0;
+
+    public UserTimeOffInfo addNumberOfDays(Double numberOfDays) {
+        this.currentNumberOfDays += numberOfDays;
+        return this;
+    }
 }

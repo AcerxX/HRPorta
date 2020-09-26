@@ -1,6 +1,12 @@
 package ro.appbranch.HRPortal.repository;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
+import ro.appbranch.HRPortal.entity.TimeOff;
+import ro.appbranch.HRPortal.entity.User;
+import ro.appbranch.HRPortal.entity.UserTimeOffInfo;
 
-public interface UserTimeOffInfoRepository extends PagingAndSortingRepository<UserTimeOffInfoRepository, Integer> {
+import java.util.Optional;
+
+public interface UserTimeOffInfoRepository extends PagingAndSortingRepository<UserTimeOffInfo, Integer> {
+    Optional<UserTimeOffInfo> findByUserAndTimeOff(User user, TimeOff timeOff);
 }

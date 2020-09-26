@@ -39,6 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/static/**", "/assets/**", "/webjars/**").permitAll()
+                .antMatchers("/cron/**").hasIpAddress("0:0:0:0:0:0:0:1")
                 .anyRequest().authenticated()
 
                 .and()
