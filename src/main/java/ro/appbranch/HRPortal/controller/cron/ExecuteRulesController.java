@@ -1,92 +1,76 @@
 package ro.appbranch.HRPortal.controller.cron;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import ro.appbranch.HRPortal.config.HRPTransactional;
-import ro.appbranch.HRPortal.entity.CompanyRule;
-import ro.appbranch.HRPortal.entity.User;
-import ro.appbranch.HRPortal.entity.UserTimeOffInfo;
 import ro.appbranch.HRPortal.repository.CompanyRuleRepository;
-import ro.appbranch.HRPortal.repository.UserTimeOffInfoRepository;
+import ro.appbranch.HRPortal.service.CompanyRuleService;
 
-import java.time.LocalDate;
-import java.time.format.TextStyle;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Controller
 public class ExecuteRulesController extends BaseCronController {
-    private final UserTimeOffInfoRepository userTimeOffInfoRepository;
-    private final CompanyRuleRepository companyRuleRepository;
+    private static final int IGNORE_LAST_EXECUTION_DATE = 1;
 
-    public ExecuteRulesController(UserTimeOffInfoRepository userTimeOffInfoRepository, CompanyRuleRepository companyRuleRepository) {
-        this.userTimeOffInfoRepository = userTimeOffInfoRepository;
+    private final CompanyRuleRepository companyRuleRepository;
+    private final CompanyRuleService companyRuleService;
+
+    @Autowired
+    public ExecuteRulesController(CompanyRuleRepository companyRuleRepository, CompanyRuleService companyRuleService) {
         this.companyRuleRepository = companyRuleRepository;
+        this.companyRuleService = companyRuleService;
+    }
+
+    @HRPTransactional
+    @ResponseBody
+    @GetMapping("/execute-rule/{companyRuleId}/{ignoreLastExecutionDate}")
+    public String executeRule(@PathVariable Integer companyRuleId, @PathVariable Integer ignoreLastExecutionDate) {
+        resetLog();
+
+        var companyRule = companyRuleRepository.findById(companyRuleId)
+                .orElseThrow(() -> new RuntimeException("Regula cu ID-ul " + companyRuleId + " nu a fost gasita in baza e date!"));
+
+        this.addLogToCronLog("[TRY] Se incearca executarea regulii " + companyRule.getId());
+
+        if (ignoreLastExecutionDate.equals(IGNORE_LAST_EXECUTION_DATE) || companyRuleService.shouldExecuteRule(companyRule)) {
+            companyRuleService.executeCompanyRule(companyRule);
+        } else {
+            this.addLogToCronLog("[SKIP] Nu se va executa regula " + companyRule.getId() + " pentru ca a fost deja executata in perioada aceasta!");
+        }
+
+        this.addLogToCronLog("[END] Regula a fost aplicata!");
+
+        return this.getCronLog();
     }
 
 
     @ResponseBody
-    @GetMapping("/execute-monthly-rules/{executionMoment}")
+    @GetMapping("/execute-rules-cron/{executionMoment}/")
     @HRPTransactional()
-    public String executeMonthlyRules(@PathVariable Integer executionMoment) {
+    public String executeRulesCron(@PathVariable Integer executionMoment) {
         resetLog();
 
         AtomicInteger numberOfExecutions = new AtomicInteger();
-        AtomicBoolean skipRunning = new AtomicBoolean(false);
 
         var toBeAppliedCompanyRules = companyRuleRepository.findAllByExecutionMoment(executionMoment);
 
         toBeAppliedCompanyRules.forEach(companyRule -> {
-            this.addLogToCronLog("[TRY] Se incearca rularea regulii " + companyRule.getId());
+            this.addLogToCronLog("[TRY] Se incearca executarea regulii " + companyRule.getId());
 
-            switch (companyRule.getExecutionMoment()) {
-                case CompanyRule.EXECUTION_MOMENT_BEGINNING_OF_MONTH -> {
-                    if (!ObjectUtils.isEmpty(companyRule.getLastExecutionDate())
-                            && companyRule.getLastExecutionDate().getMonth().equals(LocalDate.now().getMonth())
-                    ) {
-                        this.addLogToCronLog("[SKIP] Nu se va executa regula " + companyRule.getId() + " pentru ca a fost deja executata in luna " + companyRule.getLastExecutionDate().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH));
-                        skipRunning.set(true);
-                    }
-                }
-                case CompanyRule.EXECUTION_MOMENT_BEGINNING_OF_YEAR -> {
-                    if (!ObjectUtils.isEmpty(companyRule.getLastExecutionDate())
-                            && companyRule.getLastExecutionDate().getYear() == LocalDate.now().getYear()
-                    ) {
-                        this.addLogToCronLog("[SKIP] Nu se va executa regula " + companyRule.getId() + " pentru ca a fost deja executata in anul " + companyRule.getLastExecutionDate().getYear());
-                        skipRunning.set(true);
-                    }
-                }
-            }
+            if (companyRuleService.shouldExecuteRule(companyRule)) {
+                companyRuleService.executeCompanyRule(companyRule);
 
-            if (!skipRunning.get()) {
-                companyRule.setLastExecutionDate(LocalDate.now());
-                companyRuleRepository.save(companyRule);
-
-                List<User> usersToApplyRule = companyRule.getUsers().isEmpty() ? companyRule.getCompany().getUsers() : companyRule.getUsers();
-                usersToApplyRule.forEach(user -> {
-                    var userTimeOff = userTimeOffInfoRepository.findByUserAndTimeOff(user, companyRule.getTimeOff())
-                            .orElseGet(() -> new UserTimeOffInfo().setUser(user).setTimeOff(companyRule.getTimeOff()));
-
-                    switch (companyRule.getAction()) {
-                        case CompanyRule.ACTION_ADD -> userTimeOff.addNumberOfDays(companyRule.getDaysNumber());
-                        case CompanyRule.ACTION_SET -> userTimeOff.setCurrentNumberOfDays(companyRule.getDaysNumber());
-                        default -> throw new RuntimeException("Cronul de executie a regulilor de zile de concediu nu stie sa interpreteze actiunea cu id " + companyRule.getAction());
-                    }
-
-                    userTimeOffInfoRepository.save(userTimeOff);
-                    numberOfExecutions.getAndIncrement();
-                });
-
+                numberOfExecutions.getAndIncrement();
                 this.addLogToCronLog("[EXECUTED] A fost executata regula " + companyRule.getId());
+            } else {
+                this.addLogToCronLog("[SKIP] Nu se va executa regula " + companyRule.getId() + " pentru ca a fost deja executata in perioada aceasta!");
             }
         });
 
-        this.addLogToCronLog("[END] Au fost modificate " + numberOfExecutions.get() + " zile de concediu.");
+        this.addLogToCronLog("[END] Au fost aplicate " + numberOfExecutions.get() + " reguli.");
 
         return this.getCronLog();
     }
