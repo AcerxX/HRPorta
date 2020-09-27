@@ -35,6 +35,7 @@ public class CompanyRule {
     private Double daysNumber;
     private Integer executionMoment;
     private boolean cumulateYears = false;
+    private Integer maxCumulated;
     private LocalDate lastExecutionDate;
 
     @ManyToMany()

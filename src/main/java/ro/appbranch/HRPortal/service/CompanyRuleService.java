@@ -32,9 +32,21 @@ public class CompanyRuleService {
             var userTimeOff = userTimeOffInfoRepository.findByUserAndTimeOff(user, companyRule.getTimeOff())
                     .orElseGet(() -> new UserTimeOffInfo().setUser(user).setTimeOff(companyRule.getTimeOff()));
 
+            // Get number of days to be applied
+            var daysToBeApplied = companyRule.getDaysNumber();
+            if (companyRule.isCumulateYears()) {
+                var numberOfYears = LocalDate.now().getYear() - user.getHireDate().getYear();
+
+                if (!ObjectUtils.isEmpty(companyRule.getMaxCumulated())) {
+                    numberOfYears = Math.min(companyRule.getMaxCumulated(), numberOfYears);
+                }
+
+                daysToBeApplied *= numberOfYears;
+            }
+
             switch (companyRule.getAction()) {
-                case CompanyRule.ACTION_ADD -> userTimeOff.addNumberOfDays(companyRule.getDaysNumber());
-                case CompanyRule.ACTION_SET -> userTimeOff.setCurrentNumberOfDays(companyRule.getDaysNumber());
+                case CompanyRule.ACTION_ADD -> userTimeOff.addNumberOfDays(daysToBeApplied);
+                case CompanyRule.ACTION_SET -> userTimeOff.setCurrentNumberOfDays(daysToBeApplied);
                 default -> throw new RuntimeException("Cronul de executie a regulilor de zile de concediu nu stie sa interpreteze actiunea cu id " + companyRule.getAction());
             }
 
