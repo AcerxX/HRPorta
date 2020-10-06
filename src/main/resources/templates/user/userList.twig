@@ -22,19 +22,17 @@
     <script src="/webjars/AdminLTE/3.0.5/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 
     <script>
-        $(document).ready(function () {
-            let table = $('#usersList').DataTable({
-                "responsive": true,
-                "language": {
-                    url: "/assets/datatables_translation/Romanian.json"
-                }
-            });
+        let table = $('#usersList').DataTable({
+            "responsive": true,
+            "language": {
+                url: "/assets/datatables_translation/Romanian.json"
+            }
+        });
 
-            $('#usersList tbody').on('dblclick', 'tr', function () {
-                var data = table.row(this).data();
+        $('#usersList tbody').on('dblclick', 'tr', function () {
+            var data = table.row(this).data();
 
-                window.location.href = "/user/info/" + parseInt(data[0]);
-            });
+            window.location.href = "/user/info/" + parseInt(data[0]);
         });
     </script>
 {% endblock %}

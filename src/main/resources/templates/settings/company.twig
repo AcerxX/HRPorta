@@ -24,111 +24,105 @@
     <script src="/webjars/AdminLTE/3.0.5/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 
     <script>
-        $(document).ready(function () {
-            $('#saveCompany').on('click', function () {
-                let data = {
-                    'emailDomain': $('#emailDomain').val(),
-                    'name': $('#name').val()
-                };
+        $('#saveCompany').on('click', function () {
+            let data = {
+                'emailDomain': $('#emailDomain').val(),
+                'name': $('#name').val()
+            };
 
-                $.ajax({
-                    type: "POST",
-                    url: '/company/update',
-                    dataType: "json",
-                    contentType: "application/json",
-                    data: JSON.stringify(data),
-                    success: function (data) {
-                        Swal.fire(
-                            'Good job!',
-                            'Informatiile companiei tale au fost modificate!',
-                            'success'
-                        );
-
-                        setTimeout(function () {
-                            window.location.reload();
-                        }, 2000)
-                    },
-                    error: function (data) {
-                        Swal.fire(
-                            'Eroare',
-                            data.responseJSON.message,
-                            'error'
-                        );
-                    }
-                });
-            });
-
-            $('#rulesTable').DataTable({
-                "paging": false,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": false,
-                "info": true,
-                // "autoWidth": false,
-                "responsive": true,
-                "language": {
-                    url: "/assets/datatables_translation/Romanian.json"
+            $.ajax({
+                type: "POST",
+                url: '/company/update',
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (data) {
+                    Swal.fire(
+                        'Good job!',
+                        'Informatiile companiei tale au fost modificate!',
+                        'success'
+                    ).then(() => {
+                        window.location.reload();
+                    });
+                },
+                error: function (data) {
+                    Swal.fire(
+                        'Eroare',
+                        data.responseJSON.message,
+                        'error'
+                    );
                 }
             });
+        });
 
-            $('#modal-add-rule').on('show.bs.modal', function () {
-                $('#action').select2({
-                    theme: 'bootstrap4',
-                    minimumResultsForSearch: -1
-                });
-                $('#timeOff').select2({
-                    theme: 'bootstrap4',
-                });
-                $('#executionMoment').select2({
-                    theme: 'bootstrap4',
-                    minimumResultsForSearch: -1
-                });
-                $('#certainUsersList').select2({
-                    theme: 'bootstrap4',
-                });
+        $('#rulesTable').DataTable({
+            "paging": false,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": false,
+            "info": true,
+            // "autoWidth": false,
+            "responsive": true,
+            "language": {
+                url: "/assets/datatables_translation/Romanian.json"
+            }
+        });
+
+        $('#modal-add-rule').on('show.bs.modal', function () {
+            $('#action').select2({
+                theme: 'bootstrap4',
+                minimumResultsForSearch: -1
             });
+            $('#timeOff').select2({
+                theme: 'bootstrap4',
+            });
+            $('#executionMoment').select2({
+                theme: 'bootstrap4',
+                minimumResultsForSearch: -1
+            });
+            $('#certainUsersList').select2({
+                theme: 'bootstrap4',
+            });
+        });
 
-            $('#saveCompanyRule').on('click', function () {
-                let data = {
-                    'ruleId': $('#ruleId').val(),
-                    'timeOffId': $('#timeOff').val(),
-                    'action': $('#action').val(),
-                    'daysNumber': $('#daysNumber').val(),
-                    'executionMoment': $('#executionMoment').val(),
-                    'cumulateYears': $('#cumulateYears').is(':checked'),
-                };
+        $('#saveCompanyRule').on('click', function () {
+            let data = {
+                'ruleId': $('#ruleId').val(),
+                'timeOffId': $('#timeOff').val(),
+                'action': $('#action').val(),
+                'daysNumber': $('#daysNumber').val(),
+                'executionMoment': $('#executionMoment').val(),
+                'cumulateYears': $('#cumulateYears').is(':checked'),
+            };
 
-                if ($("#certainUsers").is(':checked')) {
-                    data['userIds'] = $('#certainUsersList').val();
+            if ($("#certainUsers").is(':checked')) {
+                data['userIds'] = $('#certainUsersList').val();
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '/company/update-rules',
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (data) {
+                    Swal.fire(
+                        'Good job!',
+                        'Informatiile companiei tale au fost modificate!',
+                        'success'
+                    ).then(() => {
+                        window.location.reload();
+                    });
+                },
+                error: function (data) {
+                    Swal.fire(
+                        'Eroare',
+                        data.responseJSON.message,
+                        'error'
+                    );
                 }
-
-                $.ajax({
-                    type: "POST",
-                    url: '/company/update-rules',
-                    dataType: "json",
-                    contentType: "application/json",
-                    data: JSON.stringify(data),
-                    success: function (data) {
-                        Swal.fire(
-                            'Good job!',
-                            'Informatiile companiei tale au fost modificate!',
-                            'success'
-                        );
-
-                        setTimeout(function () {
-                            window.location.reload();
-                        }, 2000)
-                    },
-                    error: function (data) {
-                        Swal.fire(
-                            'Eroare',
-                            data.responseJSON.message,
-                            'error'
-                        );
-                    }
-                });
             });
-        })
+        });
     </script>
 {% endblock %}
 

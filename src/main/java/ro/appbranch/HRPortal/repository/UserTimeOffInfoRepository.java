@@ -8,5 +8,5 @@ import ro.appbranch.HRPortal.entity.UserTimeOffInfo;
 import java.util.Optional;
 
 public interface UserTimeOffInfoRepository extends PagingAndSortingRepository<UserTimeOffInfo, Integer> {
-    Optional<UserTimeOffInfo> findByUserAndTimeOff(User user, TimeOff timeOff);
+    Optional<UserTimeOffInfo> findFirstByUserAndTimeOff(User user, TimeOff timeOff);
 }

@@ -42,11 +42,9 @@
                             'Good job!',
                             'Informatiile angajatului au fost modificate!',
                             'success'
-                        );
-
-                        setTimeout(function () {
+                        ).then(() => {
                             window.location.reload();
-                        }, 2000)
+                        });
                     },
                     error: function (data) {
                         Swal.fire(

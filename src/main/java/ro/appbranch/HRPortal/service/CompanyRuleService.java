@@ -29,7 +29,7 @@ public class CompanyRuleService {
 
         List<User> usersToApplyRule = companyRule.getUsers().isEmpty() ? companyRule.getCompany().getUsers() : companyRule.getUsers();
         usersToApplyRule.forEach(user -> {
-            var userTimeOff = userTimeOffInfoRepository.findByUserAndTimeOff(user, companyRule.getTimeOff())
+            var userTimeOff = userTimeOffInfoRepository.findFirstByUserAndTimeOff(user, companyRule.getTimeOff())
                     .orElseGet(() -> new UserTimeOffInfo().setUser(user).setTimeOff(companyRule.getTimeOff()));
 
             // Get number of days to be applied
