@@ -35,6 +35,40 @@
         }
 
         {% endfor %}
+
+        {% for userTimeOffLog in userTimeOffLogs %}
+        .userTimeOffLog{{ userTimeOffLog.date }}:before {
+            content: "{{ userTimeOffLog.text }}";
+            position: absolute;
+
+            /* vertically center */
+            top: 50%;
+            transform: translateY(-50%);
+
+            /* move to right */
+            left: 100%;
+            margin-left: 15px; /* and add a small left margin */
+
+            /* basic styles */
+            /*width:200px;*/
+            padding: 10px;
+            border-radius: 10px;
+            background: #000;
+            color: #fff;
+            text-align: center;
+
+            display: none; /* hide by default */
+        }
+
+        {#.userTimeOffLog{{ userTimeOffLog.date }} {#}
+        {#    pointer-events: none;#}
+        {#}#}
+
+        .userTimeOffLog{{ userTimeOffLog.date }}:hover:before {
+            display: block;
+        }
+
+        {% endfor %}
     </style>
 {% endblock %}
 
@@ -44,7 +78,8 @@
     <script src="/webjars/AdminLTE/3.0.5/plugins/moment/locale/ro.js"></script>
     <script src="/webjars/AdminLTE/3.0.5/plugins/daterangepicker/daterangepicker.js"></script>
     <script>
-        let holidays = {{ holidayListJson }};
+        let holidays = {{ holidayListJson }},
+            userTimeOffLogs = {{ userTimeOffLogsJson }};
 
         $('document').ready(function () {
             $('#timeOff').select2({
@@ -66,6 +101,23 @@
                             } else {
                                 return 'bg-gradient-danger holiday' + date.format("YYYYMMDD");
                             }
+                        }
+                    }
+
+                    for (let i = 0; i < userTimeOffLogs.length; i++) {
+                        let userTimeOffLog = userTimeOffLogs[i];
+
+                        if (date.format("YYYYMMDD") === userTimeOffLog.date) {
+                            return 'userTimeOffLog' + date.format("YYYYMMDD");
+                        }
+                    }
+                },
+                isInvalidDate: function (date) {
+                    for (let i = 0; i < userTimeOffLogs.length; i++) {
+                        let userTimeOffLog = userTimeOffLogs[i];
+
+                        if (date.format("YYYYMMDD") === userTimeOffLog.date) {
+                            return true;
                         }
                     }
                 }
@@ -102,7 +154,6 @@
                     }
                 });
             });
-
         });
     </script>
 {% endblock %}

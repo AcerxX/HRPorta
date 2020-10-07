@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @Accessors(chain = true)
 @Table(name = "user_time_off_log")
 public class UserTimeOffLog {
+    public static final int STATUS_DECLINED = -1;
     public static final int STATUS_DELETED = 0;
     public static final int STATUS_NOT_APPROVED = 1;
     public static final int STATUS_APPROVED = 2;

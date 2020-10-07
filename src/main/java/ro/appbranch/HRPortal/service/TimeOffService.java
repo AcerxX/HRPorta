@@ -59,7 +59,8 @@ public class TimeOffService {
                 .setTimeOff(timeOff)
                 .setStartDate(addTimeOffRequest.getStartDate())
                 .setEndDate(addTimeOffRequest.getEndDate())
-                .setNumberOfDays((double) numberOfWorkingDays);
+                .setNumberOfDays((double) numberOfWorkingDays)
+                .setApprovalUser(user.getResponsibleUser());
 
         userTimeOffLogRepository.save(userTimeOffLog);
 
@@ -74,7 +75,7 @@ public class TimeOffService {
 
             userTimeOff.addNumberOfDays(-workingDays);
 
-            // TODO check overflow
+            // TODO ar trebui veirficat overflowul???
 
             userTimeOffInfoRepository.save(userTimeOff);
         }
