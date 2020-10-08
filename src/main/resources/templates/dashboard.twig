@@ -160,11 +160,18 @@
 
 {% block body %}
     <div class="container-fluid">
-        <div class="row holidays-widgets-row">
+        <div class="row">
+            <div class="col-12">
+                <button class="btn btn-success btn-sm" data-target="#modal-add-day" data-toggle="modal"><i
+                            class="fas fa-plus"></i> Aduaga un eveniment
+                </button>
+            </div>
+        </div>
+        <div class="row holidays-widgets-row mt-3">
             <div class="col-3">
                 <div class="small-box {% if holidayCurrentDays > 0 %}bg-gradient-lightblue{% else %}bg-gradient-danger{% endif %}">
                     <div class="inner">
-                        <h3>{{ holidayCurrentDays }}</h3>
+                        <h3>{{ holidayCurrentDays }} zile</h3>
 
                         <p>Concediu odihna</p>
                     </div>
@@ -172,7 +179,7 @@
                         <i class="fas fa-plane-departure"></i>
                     </div>
                     <a href="#" class="small-box-footer" data-target="#modal-add-day" data-toggle="modal">
-                        Concediu nou <i class="fas fa-arrow-circle-right"></i>
+                        Concediu nou <i class="fas fa-angle-right"></i>
                     </a>
                 </div>
             </div>
@@ -187,7 +194,7 @@
                         <i class="fas fa-laptop-house"></i>
                     </div>
                     <a href="#" class="small-box-footer">
-                        #WFH time <i class="fas fa-arrow-circle-right"></i>
+                        #WFH time <i class="fas fa-angle-right"></i>
                     </a>
                 </div>
             </div>
@@ -195,10 +202,10 @@
     </div>
 
     <div class="modal fade" id="modal-add-day">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="add-day-title">Concediu nou</h4>
+                    <h4 class="modal-title" id="add-day-title">Eveniment nou</h4>
                     <button aria-label="Close" class="close" data-dismiss="modal" type="button">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -226,7 +233,7 @@
                         </dd>
                     </dl>
                 </div>
-                <div class="modal-footer justify-content-between">
+                <div class="modal-footer">
                     {# <button class="btn btn-default" data-dismiss="modal" type="button">Inchide</button> #}
                     <button class="btn btn-primary" type="button" id="saveNewUserTimeOff">Adauga concediu</button>
                 </div>

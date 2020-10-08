@@ -28,7 +28,7 @@ public class UserTimeOffLog {
     @ManyToOne(fetch = FetchType.LAZY)
     private TimeOff timeOff;
 
-    private Double numberOfDays;
+    private Integer numberOfDays;
     private LocalDate startDate;
     private LocalDate endDate;
     private Integer status = STATUS_NOT_APPROVED;

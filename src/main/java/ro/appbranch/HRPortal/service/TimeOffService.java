@@ -59,23 +59,20 @@ public class TimeOffService {
                 .setTimeOff(timeOff)
                 .setStartDate(addTimeOffRequest.getStartDate())
                 .setEndDate(addTimeOffRequest.getEndDate())
-                .setNumberOfDays((double) numberOfWorkingDays)
+                .setNumberOfDays((int) numberOfWorkingDays)
                 .setApprovalUser(user.getResponsibleUser());
 
         userTimeOffLogRepository.save(userTimeOffLog);
 
-        updateUserTimeOffInfo(user, timeOff, (double) numberOfWorkingDays);
+        removeTimeOffDays(user, timeOff, (double) numberOfWorkingDays);
     }
 
-    private void updateUserTimeOffInfo(User user, TimeOff timeOff, Double workingDays) {
+    private void removeTimeOffDays(User user, TimeOff timeOff, Double workingDays) {
         var userTimeOffOptional = userTimeOffInfoRepository.findFirstByUserAndTimeOff(user, timeOff);
 
         if (userTimeOffOptional.isPresent()) {
             var userTimeOff = userTimeOffOptional.get();
-
             userTimeOff.addNumberOfDays(-workingDays);
-
-            // TODO ar trebui veirficat overflowul???
 
             userTimeOffInfoRepository.save(userTimeOff);
         }
