@@ -2,8 +2,10 @@ package ro.appbranch.HRPortal.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import ro.appbranch.HRPortal.dto.BaseResponse;
 import ro.appbranch.HRPortal.dto.timeOff.AddTimeOffRequest;
 import ro.appbranch.HRPortal.service.TimeOffService;
@@ -27,12 +29,5 @@ public class TimeOffController extends SecuredController {
         timeOffService.addTimeOff(addTimeOffRequest);
 
         return new BaseResponse();
-    }
-
-    @GetMapping("/view")
-    public String addTimeOff(Model model) {
-
-
-        return "";
     }
 }

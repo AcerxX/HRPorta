@@ -32,21 +32,25 @@ public class DashboardController extends SecuredController {
     public String homepage(Model model) {
         model.addAttribute(
                 "holidayCurrentDays",
-                this.getLoggedUser()
-                        .getUserTimeOffInfoList()
-                        .stream()
-                        .filter(userTimeOffInfo -> userTimeOffInfo.getTimeOff().getId().equals(TimeOff.ID_CO))
-                        .mapToDouble(UserTimeOffInfo::getCurrentNumberOfDays)
-                        .sum()
+                (int) Math.floor(
+                        this.getLoggedUser()
+                                .getUserTimeOffInfoList()
+                                .stream()
+                                .filter(userTimeOffInfo -> userTimeOffInfo.getTimeOff().getId().equals(TimeOff.ID_CO))
+                                .mapToDouble(UserTimeOffInfo::getCurrentNumberOfDays)
+                                .sum()
+                )
         );
         model.addAttribute(
                 "wfhCurrentDays",
-                this.getLoggedUser()
-                        .getUserTimeOffInfoList()
-                        .stream()
-                        .filter(userTimeOffInfo -> userTimeOffInfo.getTimeOff().getId().equals(TimeOff.ID_WFH))
-                        .mapToDouble(UserTimeOffInfo::getCurrentNumberOfDays)
-                        .sum()
+                (int) Math.floor(
+                        this.getLoggedUser()
+                                .getUserTimeOffInfoList()
+                                .stream()
+                                .filter(userTimeOffInfo -> userTimeOffInfo.getTimeOff().getId().equals(TimeOff.ID_WFH))
+                                .mapToDouble(UserTimeOffInfo::getCurrentNumberOfDays)
+                                .sum()
+                )
         );
 
         model.addAttribute("timeOffList", timeOffRepository.findAllByStatusTrueOrderBySortOrderAsc());
@@ -70,7 +74,7 @@ public class DashboardController extends SecuredController {
                     }
                 });
         model.addAttribute("userTimeOffLogsJson", new Gson().toJson(userTimeOffLogs));
-        model.addAttribute("userTimeOffLogs", userTimeOffLogs);
+        model.addAttribute("userTimeOffLogsArrayList", userTimeOffLogs);
 
         return "dashboard";
     }

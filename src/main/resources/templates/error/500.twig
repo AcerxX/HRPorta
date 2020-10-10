@@ -1,7 +1,33 @@
 {% extends "../base.twig" %}
 
-{% set title = "500" %}
+{% set title = "Oops..." %}
+
+{% block stylesheets %}
+    <style>
+        .fa-spin {
+            -webkit-animation: fa-spin 4s infinite linear;
+            animation: fa-spin 4s infinite linear;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    Ceva nu a fost deloc OK...
+    <div class="container-fluid w-100 h-100">
+        <div class="row">
+            <div class="col-12 text-center" style="font-size: 8.5rem; font-family: 'Nunito Sans', sans-serif;">
+                5 <i class="far fa-times-circle fa-spin"></i> 0
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="offset-2 col-8 text-center h4">
+                Lucrurile nu sunt chiar la locul lor aici. Cel mai probabil echipa tehnica are deja toate informatiile
+                pentru a rezolva problema. O varianta ar fi sa revenim mai tarziu sa vedem daca s-a rezolvat.
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="offset-2 col-8 text-center h4">
+                Pana atunci, hai sa ne intoarcem la <a href="/">dashboard</a> si sa cautam alte lucruri de facut.
+            </div>
+        </div>
+    </div>
 {% endblock %}

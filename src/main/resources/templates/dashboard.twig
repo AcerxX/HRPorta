@@ -36,7 +36,7 @@
 
         {% endfor %}
 
-        {% for userTimeOffLog in userTimeOffLogs %}
+        {% for userTimeOffLog in userTimeOffLogsArrayList %}
         .userTimeOffLog{{ userTimeOffLog.date }}:before {
             content: "{{ userTimeOffLog.text }}";
             position: absolute;
@@ -80,89 +80,15 @@
     <script>
         let holidays = {{ holidayListJson }},
             userTimeOffLogs = {{ userTimeOffLogsJson }};
-
-        $('document').ready(function () {
-            $('#timeOff').select2({
-                theme: 'bootstrap4'
-            });
-
-            $('#date').daterangepicker({
-                showDropdowns: true,
-                minYear: moment().format('YYYY'),
-                maxYear: moment().format('YYYY') + 1,
-                locale: 'ro',
-                isCustomDate: function (date) {
-                    for (let i = 0; i < holidays.length; i++) {
-                        let holiday = holidays[i];
-
-                        if (date.year() === holiday.date.year && (date.month() + 1) === holiday.date.month && date.date() === holiday.date.day) {
-                            if (holiday.suggestion) {
-                                return 'bg-gradient-warning holiday' + date.format("YYYYMMDD");
-                            } else {
-                                return 'bg-gradient-danger holiday' + date.format("YYYYMMDD");
-                            }
-                        }
-                    }
-
-                    for (let i = 0; i < userTimeOffLogs.length; i++) {
-                        let userTimeOffLog = userTimeOffLogs[i];
-
-                        if (date.format("YYYYMMDD") === userTimeOffLog.date) {
-                            return 'userTimeOffLog' + date.format("YYYYMMDD");
-                        }
-                    }
-                },
-                isInvalidDate: function (date) {
-                    for (let i = 0; i < userTimeOffLogs.length; i++) {
-                        let userTimeOffLog = userTimeOffLogs[i];
-
-                        if (date.format("YYYYMMDD") === userTimeOffLog.date) {
-                            return true;
-                        }
-                    }
-                }
-            });
-
-            $('#saveNewUserTimeOff').on('click', function () {
-                let data = {
-                    'timeOffType': $('#timeOff').val(),
-                    'startDate': $('#date').data('daterangepicker').startDate.format("DD.MM.YYYY"),
-                    'endDate': $('#date').data('daterangepicker').endDate.format("DD.MM.YYYY")
-                };
-
-                $.ajax({
-                    type: "POST",
-                    url: '/time-off/add',
-                    dataType: "json",
-                    contentType: "application/json",
-                    data: JSON.stringify(data),
-                    success: function (data) {
-                        Swal.fire(
-                            'Concediu placut!',
-                            'Cererea de concediu a fost adaugata si urmeaza sa fie aprobata de catre <b>{{ loggedUser.responsibleUser.fullName }}</b>!',
-                            'success'
-                        ).then(() => {
-                            window.location.reload();
-                        });
-                    },
-                    error: function (data) {
-                        Swal.fire(
-                            'Eroare',
-                            data.responseJSON.message,
-                            'error'
-                        );
-                    }
-                });
-            });
-        });
     </script>
+    <script src="/assets/js/addUserTimeOffModal.js"></script>
 {% endblock %}
 
 {% block body %}
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <button class="btn btn-success btn-sm" data-target="#modal-add-day" data-toggle="modal"><i
+                <button class="btn btn-success btn-sm" data-target="#modal-add-user-time-off" data-toggle="modal"><i
                             class="fas fa-plus"></i> Aduaga un eveniment
                 </button>
             </div>
@@ -178,7 +104,7 @@
                     <div class="icon">
                         <i class="fas fa-plane-departure"></i>
                     </div>
-                    <a href="#" class="small-box-footer" data-target="#modal-add-day" data-toggle="modal">
+                    <a href="#" class="small-box-footer" data-target="#modal-add-user-time-off" data-toggle="modal">
                         Concediu nou <i class="fas fa-angle-right"></i>
                     </a>
                 </div>
@@ -201,45 +127,5 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modal-add-day">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="add-day-title">Eveniment nou</h4>
-                    <button aria-label="Close" class="close" data-dismiss="modal" type="button">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <dl class="row">
-                        <dt class="col-sm-4"><label for="timeOff">Ce fel de zi?</label></dt>
-                        <dd class="col-sm-8">
-                            <select class="form-control" id="timeOff">
-                                {% for timeOff in timeOffList %}
-                                    <option value="{{ timeOff.id }}">{{ timeOff.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </dd>
-
-                        <dt class="col-sm-4"><label for="date">Cand?</label></dt>
-                        <dd class="col-sm-8">
-                            <input type="text" id="date" autocomplete="off" class="form-control"
-                                   name="date" required>
-                        </dd>
-
-                        <dt class="col-sm-4"><label for="date">Aprobare:</label></dt>
-                        <dd class="col-sm-8">
-                            {{ loggedUser.responsibleUser.fullName }}
-                        </dd>
-                    </dl>
-                </div>
-                <div class="modal-footer">
-                    {# <button class="btn btn-default" data-dismiss="modal" type="button">Inchide</button> #}
-                    <button class="btn btn-primary" type="button" id="saveNewUserTimeOff">Adauga concediu</button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
+    {% include "timeOff/addUserTimeOffModal.twig" %}
 {% endblock %}

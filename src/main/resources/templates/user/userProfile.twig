@@ -7,6 +7,71 @@
     <link href="/webjars/select2/4.0.13/css/select2.min.css" rel="stylesheet"/>
     <link href="/webjars/ttskch__select2-bootstrap4-theme/1.4.0/dist/select2-bootstrap4.min.css" rel="stylesheet"/>
     <link href="/webjars/AdminLTE/3.0.5/plugins/daterangepicker/daterangepicker.css" rel="stylesheet"/>
+    <style>
+        {% for holiday in holidayList %}
+        .holiday{{ holiday.id }}:before {
+            content: "{{ holiday.name }}";
+            position: absolute;
+
+            /* vertically center */
+            top: 50%;
+            transform: translateY(-50%);
+
+            /* move to right */
+            left: 100%;
+            margin-left: 15px; /* and add a small left margin */
+
+            /* basic styles */
+            /*width:200px;*/
+            padding: 10px;
+            border-radius: 10px;
+            background: #000;
+            color: #fff;
+            text-align: center;
+
+            display: none; /* hide by default */
+        }
+
+        .holiday{{ holiday.id }}:hover:before {
+            display: block;
+        }
+
+        {% endfor %}
+
+        {% for userTimeOffLog in userTimeOffLogsArrayList %}
+        .userTimeOffLog{{ userTimeOffLog.date }}:before {
+            content: "{{ userTimeOffLog.text }}";
+            position: absolute;
+
+            /* vertically center */
+            top: 50%;
+            transform: translateY(-50%);
+
+            /* move to right */
+            left: 100%;
+            margin-left: 15px; /* and add a small left margin */
+
+            /* basic styles */
+            /*width:200px;*/
+            padding: 10px;
+            border-radius: 10px;
+            background: #000;
+            color: #fff;
+            text-align: center;
+
+            display: none; /* hide by default */
+        }
+
+        {#.userTimeOffLog{{ userTimeOffLog.date }} {#}
+        {#    pointer-events: none;#}
+        {#}#}
+
+        .userTimeOffLog{{ userTimeOffLog.date }}:hover:before {
+            display: block;
+        }
+
+        {% endfor %}
+    </style>
 {% endblock %}
 
 {% block javascripts %}
@@ -15,6 +80,11 @@
     <script src="/webjars/AdminLTE/3.0.5/plugins/moment/locale/ro.js"></script>
     <script src="/webjars/AdminLTE/3.0.5/plugins/daterangepicker/daterangepicker.js"></script>
     <script src="/assets/js/userForm.js"></script>
+    <script>
+        let holidays = {{ holidayListJson }},
+            userTimeOffLogs = {{ userTimeOffLogsJson }};
+    </script>
+    <script src="/assets/js/addUserTimeOffModal.js"></script>
 
     <script>
         $(document).ready(function () {
@@ -76,14 +146,32 @@
 
                         <p class="text-muted text-center">{{ user.job.name }}</p>
 
-                        <ul class="list-group list-group-unbordered mb-3">
-                            <li class="list-group-item">
-                                <b>Zile concediu {{ "now"|date("YYYY") }}</b> <a class="float-right">5</a>
-                            </li>
-                            <li class="list-group-item">
-                                <b>#WFH{{ "now"|date("MMMM") }}</b> <a class="float-right">10</a>
-                            </li>
-                        </ul>
+                        <div class="row">
+                            <div class="col-12 text-center font-weight-bold">Zile disponibile</div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-6">
+                                <div class="info-box bg-light">
+                                    <div class="info-box-content">
+                                        <span class="info-box-text text-center text-muted">CO</span>
+                                        <span class="info-box-number text-center text-muted mb-0">{{ holidayCurrentDays }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="info-box bg-light">
+                                    <div class="info-box-content">
+                                        <span class="info-box-text text-center text-muted">#WFH</span>
+                                        <span class="info-box-number text-center text-muted mb-0">{{ wfhCurrentDays }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-success btn-block" data-target="#modal-add-user-time-off"
+                                data-toggle="modal">
+                            <i class="fas fa-plus"></i> Aduaga un eveniment
+                        </button>
                     </div>
                     <!-- /.card-body -->
                 </div>
@@ -137,22 +225,23 @@
                 <div class="card">
                     <div class="card-header p-2">
                         <ul class="nav nav-pills">
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab"
+                            <li class="nav-item"><a class="nav-link active" data-toggle="tab"
                                                     href="#info">Informatii</a>
                             </li>
                             <li class="nav-item"><a class="nav-link" data-toggle="tab"
                                                     href="#documents">Documente</a></li>
-                            <li class="nav-item"><a class="nav-link active" data-toggle="tab"
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab"
                                                     href="#settings">Setari</a></li>
                         </ul>
                     </div>
                     <div class="card-body">
                         <div class="tab-content">
-                            <div class="tab-pane" id="info">
+                            <div class="tab-pane active" id="info">
+                                {% include "userInfo.twig" %}
                             </div>
                             <div class="tab-pane" id="documents">
                             </div>
-                            <div class="active tab-pane" id="settings">
+                            <div class="tab-pane" id="settings">
                                 {% include "userForm.twig" %}
 
                                 <div class="row mt-3">
@@ -169,4 +258,6 @@
             </div>
         </div>
     </div>
+
+    {% include "../timeOff/addUserTimeOffModal.twig" %}
 {% endblock %}

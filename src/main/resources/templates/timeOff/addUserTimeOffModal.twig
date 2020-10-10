@@ -1,0 +1,39 @@
+<div class="modal fade" id="modal-add-user-time-off">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="add-day-title">Eveniment nou</h4>
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <dl class="row">
+                    <dt class="col-sm-4"><label for="timeOff">Ce fel de zi?</label></dt>
+                    <dd class="col-sm-8">
+                        <select class="form-control" id="timeOff">
+                            {% for timeOff in timeOffList %}
+                                <option value="{{ timeOff.id }}">{{ timeOff.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </dd>
+
+                    <dt class="col-sm-4"><label for="date">Cand?</label></dt>
+                    <dd class="col-sm-8">
+                        <input type="text" id="date" autocomplete="off" class="form-control"
+                               name="date" required>
+                    </dd>
+
+                    <dt class="col-sm-4"><label for="date">Aprobare:</label></dt>
+                    <dd class="col-sm-8">
+                        {{ loggedUser.responsibleUser.fullName }}
+                    </dd>
+                </dl>
+            </div>
+            <div class="modal-footer">
+                {# <button class="btn btn-default" data-dismiss="modal" type="button">Inchide</button> #}
+                <button class="btn btn-primary" type="button" id="saveNewUserTimeOff">Adauga concediu</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,97 @@
+<div class="row">
+    <div class="col-4">
+        <div class="info-box bg-light">
+            <div class="info-box-content">
+                <span class="info-box-text text-center text-muted">Zile de concediu ramase din {{ "now"|date("YYYY") - 1 }}</span>
+                <span class="info-box-number text-center text-muted mb-0">{{ lastYearRemainedCO }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="info-box bg-light">
+            <div class="info-box-content">
+                <span class="info-box-text text-center text-muted">Zile de concediu primite in {{ "now"|date("YYYY") }}</span>
+                <span class="info-box-number text-center text-muted mb-0">{{ thisYearTotalCO }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="info-box bg-light">
+            <div class="info-box-content">
+                <span class="info-box-text text-center text-muted">Urmatorul concediu</span>
+                <span class="info-box-number text-center text-muted mb-0">{{ nextTimeOff }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12 h5">
+        Activitate recenta
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <table class="table table-striped table-sm text-center" id="timeOffLogList">
+            <thead class="thead-dark">
+            <tr>
+                <th>
+                    Tipul
+                </th>
+                <th>
+                    De la
+                </th>
+                <th>
+                    Pana la
+                </th>
+                <th>
+                    Nr zile CO
+                </th>
+                <th>
+                    Status
+                </th>
+                <th>
+                    Aprobat de
+                </th>
+                <th>
+                    Aprobat la data
+                </th>
+                <th>
+                    Actiuni
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for userTimeOffLog in userTimeOffLogs %}
+                <tr>
+                    <td>
+                        {{ userTimeOffLog.timeOff.name }}
+                    </td>
+                    <td>
+                        {{ userTimeOffLog.getStartDateAsString }}
+                    </td>
+                    <td>
+                        {{ userTimeOffLog.getEndDateAsString }}
+                    </td>
+                    <td>
+                        {{ userTimeOffLog.numberOfDays }}
+                    </td>
+                    <td>
+                        {{ userTimeOffLog.getStatusAsString }}
+                    </td>
+                    <td>
+                        {% if userTimeOffLog.approvalUser is empty %} - {% else %} {{ userTimeOffLog.approvalUser.fullName }} {% endif %}
+                    </td>
+                    <td>
+                        {{ userTimeOffLog.getApprovalDateAsString }}
+                    </td>
+                    <td>
+
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

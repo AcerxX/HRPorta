@@ -9,7 +9,7 @@
         {% set title = "easyHR" %}
     {% endif %}
 
-    <title>{{ title }} | EZHR </title>
+    <title>EZHR | {{ title }}</title>
 
     <link rel="stylesheet" type="text/css" href="/webjars/font-awesome/5.14.0/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="/webjars/AdminLTE/3.0.5/dist/css/adminlte.min.css">
@@ -261,7 +261,7 @@
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item active">CHANGE THIS</li>
+                                <li class="breadcrumb-item active">{{ title }}</li>
                             </ol>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
@@ -294,10 +294,10 @@
     <footer class="main-footer">
         <!-- To the right -->
         <div class="float-right d-none d-sm-inline">
-            Because things should be easy.
+            Because things should be THAT easy.
         </div>
         <!-- Default to the left -->
-        <strong>Copyright &copy; {{ "now"|date("Y") }} AppBranch.</strong> All rights reserved.
+        <strong>Copyright &copy; {{ "now"|date("Y") }} Softica.</strong> All rights reserved.
     </footer>
 </div>
 

@@ -3,9 +3,11 @@ package ro.appbranch.HRPortal.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Getter
@@ -38,4 +40,30 @@ public class UserTimeOffLog {
     private LocalDate approvalDate;
 
     private LocalDate created = LocalDate.now();
+
+    public String getStartDateAsString() {
+        return this.startDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    }
+
+    public String getEndDateAsString() {
+        return this.endDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    }
+
+    public String getApprovalDateAsString() {
+        if (ObjectUtils.isEmpty(this.approvalDate)) {
+            return "-";
+        }
+
+        return this.approvalDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    }
+
+    public String getStatusAsString() {
+        return switch (this.status) {
+            case STATUS_DECLINED -> "REFUZAT";
+            case STATUS_DELETED -> "STERS";
+            case STATUS_NOT_APPROVED -> "NEAPROBAT";
+            case STATUS_APPROVED -> "APROBAT";
+            default -> "N/A";
+        };
+    }
 }
