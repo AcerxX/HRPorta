@@ -62,7 +62,7 @@ public class DashboardController extends SecuredController {
         List<Map<String, String>> userTimeOffLogs = new ArrayList<>();
         this.getLoggedUser().getUserTimeOffLogs()
                 .forEach(userTimeOffLog -> {
-                    if (!userTimeOffLog.getStatus().equals(UserTimeOffLog.STATUS_DELETED) && !userTimeOffLog.getStatus().equals(UserTimeOffLog.STATUS_DECLINED)) {
+                    if (!userTimeOffLog.getStatus().equals(UserTimeOffLog.STATUS_DECLINED)) {
                         userTimeOffLog.getStartDate().datesUntil(userTimeOffLog.getEndDate().plusDays(1))
                                 .forEach(localDate -> {
                                     Map<String, String> temp = new HashMap<>();

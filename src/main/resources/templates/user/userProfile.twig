@@ -7,6 +7,12 @@
     <link href="/webjars/select2/4.0.13/css/select2.min.css" rel="stylesheet"/>
     <link href="/webjars/ttskch__select2-bootstrap4-theme/1.4.0/dist/select2-bootstrap4.min.css" rel="stylesheet"/>
     <link href="/webjars/AdminLTE/3.0.5/plugins/daterangepicker/daterangepicker.css" rel="stylesheet"/>
+
+
+    <link href="/webjars/AdminLTE/3.0.5/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link href="/webjars/AdminLTE/3.0.5/plugins/datatables-responsive/css/responsive.bootstrap4.min.css"
+          rel="stylesheet">
+
     <style>
         {% for holiday in holidayList %}
         .holiday{{ holiday.id }}:before {
@@ -79,6 +85,13 @@
     <script src="/webjars/AdminLTE/3.0.5/plugins/moment/moment-with-locales.min.js"></script>
     <script src="/webjars/AdminLTE/3.0.5/plugins/moment/locale/ro.js"></script>
     <script src="/webjars/AdminLTE/3.0.5/plugins/daterangepicker/daterangepicker.js"></script>
+
+
+    <script src="/webjars/AdminLTE/3.0.5/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+
     <script src="/assets/js/userForm.js"></script>
     <script>
         let holidays = {{ holidayListJson }},
@@ -87,7 +100,59 @@
     <script src="/assets/js/addUserTimeOffModal.js"></script>
 
     <script>
+        $('#timeOffLogList').DataTable({
+            "paging": false,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": false,
+            "info": false,
+            "autoWidth": true,
+            "responsive": false,
+            "language": {
+                url: "/assets/datatables_translation/Romanian.json"
+            }
+        });
+
         $(document).ready(function () {
+            $('.deleteUserTimeOffLog').on('click', function () {
+                let id = $(this).attr('data-userTimeOffLogId');
+
+                Swal.fire({
+                    title: 'Esti sigur(a) ca vrei sa stergi aceasta cerere?',
+                    text: "Dupa stergere, aceasta cerere nu va mai putea fi folosita.",
+                    icon: 'warning',
+                    iconColor: '#dc3545',
+                    confirmButtonColor: '#dc3545',
+                    showCancelButton: true,
+                    confirmButtonText: 'Da, sterge cererea!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "DELETE",
+                            url: '/time-off/delete/' + id,
+                            dataType: "json",
+                            contentType: "application/json",
+                            success: function (data) {
+                                Swal.fire(
+                                    'Am reusit!',
+                                    'Cererea a fost stearsa din sistem!',
+                                    'success'
+                                ).then(() => {
+                                    window.location.reload();
+                                });
+                            },
+                            error: function (data) {
+                                Swal.fire(
+                                    'Eroare',
+                                    data.responseJSON.message,
+                                    'error'
+                                );
+                            }
+                        });
+                    }
+                })
+            });
+
             $('#saveUser').on('click', function () {
                 let data = {
                     'id': {{ user.id }},

@@ -51,7 +51,7 @@ public class TimeOffService {
                 - numberOfHolidays;
 
         if (numberOfWorkingDays == 0) {
-            throw new RuntimeException("Durata concediului selectat este de 0 zile!");
+            throw new RuntimeException("Concediul selectat nu contine nicio zi lucratoare! Nu este nevoie de o cerere de concediu pentru aceasta situatie!");
         }
 
         var userTimeOffLog = new UserTimeOffLog()
@@ -76,5 +76,13 @@ public class TimeOffService {
 
             userTimeOffInfoRepository.save(userTimeOff);
         }
+    }
+
+    public void deleteTimeOffLog(Integer timeOffLogId) {
+        var userTimeOffLog = userTimeOffLogRepository.findById(timeOffLogId)
+                .orElseThrow(() -> new RuntimeException("Cererea ce se dorea a fi stearsa nu a fost gasita in baza de date!"));
+
+        userTimeOffLog.setStatus(UserTimeOffLog.STATUS_DELETED);
+        userTimeOffLogRepository.save(userTimeOffLog);
     }
 }

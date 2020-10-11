@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-4">
+    <div class="col-md-6 col-xl-4">
         <div class="info-box bg-light">
             <div class="info-box-content">
                 <span class="info-box-text text-center text-muted">Zile de concediu ramase din {{ "now"|date("YYYY") - 1 }}</span>
@@ -7,7 +7,7 @@
             </div>
         </div>
     </div>
-    <div class="col-4">
+    <div class="col-md-6 col-xl-4">
         <div class="info-box bg-light">
             <div class="info-box-content">
                 <span class="info-box-text text-center text-muted">Zile de concediu primite in {{ "now"|date("YYYY") }}</span>
@@ -15,7 +15,7 @@
             </div>
         </div>
     </div>
-    <div class="col-4">
+    <div class="col-md-6 col-xl-4">
         <div class="info-box bg-light">
             <div class="info-box-content">
                 <span class="info-box-text text-center text-muted">Urmatorul concediu</span>
@@ -87,7 +87,11 @@
                         {{ userTimeOffLog.getApprovalDateAsString }}
                     </td>
                     <td>
-
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-danger bg-gradient-danger deleteUserTimeOffLog"
+                                    data-userTimeOffLogId="{{ userTimeOffLog.id }}"><i class="fas fa-trash"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             {% endfor %}

@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -57,5 +58,12 @@ public class User {
 
     public String getHireDateAsString() {
         return this.hireDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    }
+
+    public List<UserTimeOffLog> getUserTimeOffLogs() {
+        return this.userTimeOffLogs
+                .stream()
+                .filter(userTimeOffLog -> !userTimeOffLog.getStatus().equals(UserTimeOffLog.STATUS_DELETED))
+                .collect(Collectors.toList());
     }
 }

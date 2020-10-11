@@ -1,9 +1,4 @@
 $('document').ready(function () {
-    if (holidays.length === 0 || userTimeOffLogs.length === 0) {
-        alert("JS-ul addUserTimeOffModal nu functioneaza corect!");
-        return;
-    }
-
     $('#timeOff').select2({
         theme: 'bootstrap4'
     });
@@ -61,7 +56,7 @@ $('document').ready(function () {
             success: function (data) {
                 Swal.fire(
                     'Concediu placut!',
-                    'Cererea de concediu a fost adaugata si urmeaza sa fie aprobata de catre <b>{{ loggedUser.responsibleUser.fullName }}</b>!',
+                    'Cererea de concediu a fost adaugata si trimisa spre aprobare!',
                     'success'
                 ).then(() => {
                     window.location.reload();
