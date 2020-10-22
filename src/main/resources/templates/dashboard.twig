@@ -6,6 +6,16 @@
     <link href="/webjars/ttskch__select2-bootstrap4-theme/1.4.0/dist/select2-bootstrap4.min.css" rel="stylesheet"/>
     <link href="/webjars/AdminLTE/3.0.5/plugins/daterangepicker/daterangepicker.css" rel="stylesheet"/>
     <style>
+        .hover-only {
+            display: none !important;
+            transition: .5s ease;
+        }
+
+        .has-hover:hover .hover-only {
+            display: flex !important;
+        }
+
+
         {% for holiday in holidayList %}
         .holiday{{ holiday.id }}:before {
             content: "{{ holiday.name }}";
@@ -80,6 +90,10 @@
     <script>
         let holidays = {{ holidayListJson }},
             userTimeOffLogs = {{ userTimeOffLogsJson }};
+
+        $('document').ready(function () {
+            $('*[data-toggle="tooltip"]').tooltip('enable');
+        });
     </script>
     <script src="/assets/js/addUserTimeOffModal.js"></script>
 {% endblock %}
@@ -93,7 +107,13 @@
                 </button>
             </div>
         </div>
-        <div class="row holidays-widgets-row mt-3">
+        <div class="row mt-3" id="searchRow">
+            <div class="offset-md-2 col-md-8">
+                <label for="intelliBar">IntelliBar</label>
+                <input class="w-100 form-control" placeholder="IntelliBar" id="intelliBar">
+            </div>
+        </div>
+        <div class="row holidays-widgets-row mt-5">
             <div class="col-3">
                 <div class="small-box {% if holidayCurrentDays > 0 %}bg-gradient-lightblue{% else %}bg-gradient-danger{% endif %}">
                     <div class="inner">
@@ -109,6 +129,7 @@
                     </a>
                 </div>
             </div>
+
             <div class="col-3">
                 <div class="small-box {% if wfhCurrentDays > 0 %}bg-gradient-orange text-white{% else %}bg-gradient-danger{% endif %}">
                     <div class="inner">
@@ -124,6 +145,37 @@
                     </a>
                 </div>
             </div>
+
+            {% if loggedUser.getResponsibleForUserTimeOffs|length > 0 %}
+                <div class="col-3">
+                    <div class="small-box bg-gradient-warning">
+                        <div class="inner">
+                            <h3>{{ loggedUser.getResponsibleForUserTimeOffs|length }}</h3>
+
+                            <p>Cereri in pending</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <a href="/time-off/review-list" class="small-box-footer">
+                            Verifica cererile <i class="fas fa-angle-right"></i>
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-3">
+                    <div class="small-box bg-gradient-success" style="height: 142px">
+                        <div class="inner">
+                            <h3>OK</h3>
+
+                            <p>Nicio cerere in pending</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 

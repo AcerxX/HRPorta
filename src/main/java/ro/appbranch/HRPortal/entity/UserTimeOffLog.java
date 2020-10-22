@@ -66,4 +66,13 @@ public class UserTimeOffLog {
             default -> "N/A";
         };
     }
+
+    public String getCreatedAsTimeAgoString() {
+        var daysAgo = this.getCreated().until(LocalDate.now()).getDays();
+        return switch (daysAgo) {
+            case 0 -> "Azi";
+            case 1 -> "Acum o zi";
+            default -> "Acum " + daysAgo + " zile";
+        };
+    }
 }

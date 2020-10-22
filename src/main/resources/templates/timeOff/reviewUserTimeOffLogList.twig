@@ -1,0 +1,117 @@
+{% extends "../base.twig" %}
+
+{% set title = "Cereri angajati " ~ (loggedUser.company.name) %}
+
+{% block stylesheets %}
+    <link href="/webjars/AdminLTE/3.0.5/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link href="/webjars/AdminLTE/3.0.5/plugins/datatables-responsive/css/responsive.bootstrap4.min.css"
+          rel="stylesheet">
+    <style>
+        #userTimeOffLogList tbody {
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/webjars/AdminLTE/3.0.5/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+
+    <script>
+        let table = $('#userTimeOffLogList').DataTable({
+            "paging": false,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": false,
+            "info": false,
+            "autoWidth": true,
+            "responsive": false,
+            "language": {
+                url: "/assets/datatables_translation/Romanian.json"
+            }
+        });
+
+        $('#userTimeOffLogList tbody').on('dblclick', 'tr', function () {
+            var data = table.row(this).data();
+
+            window.location.href = "/time-off/review/" + parseInt(data[0]);
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-hover" id="userTimeOffLogList">
+                            <thead>
+                            <tr>
+                                <th>
+                                    ID
+                                </th>
+                                <th>
+                                    Nume angajat
+                                </th>
+                                <th>
+                                    Echipa
+                                </th>
+                                <th>
+                                    Tip Cerere
+                                </th>
+                                <th>
+                                    Nr. zile
+                                </th>
+                                <th>
+                                    Data start
+                                </th>
+                                <th>
+                                    Data final
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for userTimeOffLog in userTimeOffLogs %}
+                                <tr>
+                                    <td class="text-center">
+                                        {{ userTimeOffLog.id }}
+                                    </td>
+                                    <td>
+                                        {{ userTimeOffLog.user.fullName }}
+                                    </td>
+                                    <td>
+                                        {{ userTimeOffLog.user.team.name }}
+                                    </td>
+                                    <td>
+                                        {{ userTimeOffLog.timeOff.name }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ userTimeOffLog.numberOfDays }}
+                                    </td>
+                                    <td>
+                                        {{ userTimeOffLog.getStartDateAsString }}
+                                    </td>
+                                    <td>
+                                        {{ userTimeOffLog.getEndDateAsString }}
+                                    </td>
+                                    <td>
+                                        {{ userTimeOffLog.getStatusAsString }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

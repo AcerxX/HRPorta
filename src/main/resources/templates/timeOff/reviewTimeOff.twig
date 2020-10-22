@@ -1,0 +1,114 @@
+{% extends "../base.twig" %}
+
+{% set title = "Aprobare " ~ (userTimeOffLog.timeOff.name) %}
+
+{% block stylesheets %}
+    <link href="/webjars/AdminLTE/3.0.5/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link href="/webjars/AdminLTE/3.0.5/plugins/datatables-responsive/css/responsive.bootstrap4.min.css"
+          rel="stylesheet">
+    <style>
+        .knob-label {
+            margin-top: -20px;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/webjars/AdminLTE/3.0.5/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/jquery-knob/jquery.knob.min.js"></script>
+    <script>
+        $('#remainingDaysKnob').knob({
+            'format': function (value) {
+                return 22 - value;
+            }
+        });
+        $('#percentageLastYearKnob').knob({
+            'format': function (value) {
+                return value + '%';
+            }
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Situatie {{ userTimeOffLog.timeOff.name }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6 text-center">
+                                <input class="knob" data-angleArc="250" data-angleOffset="-125"
+                                       data-fgColor="#00c0ef" data-height="120" data-linecap="round" readonly
+                                       data-thickness="0.2" data-width="120" type="text" value="17" data-max="22"
+                                       id="remainingDaysKnob">
+                                <div class="knob-label font-weight-bold">zile ramase {{ "now"|date("YYYY") }}</div>
+                            </div>
+                            <div class="col-6 text-center">
+                                <input class="knob" data-angleArc="250" data-angleOffset="-125"
+                                       data-fgColor="#28a745" data-height="120" data-linecap="round" readonly
+                                       data-thickness="0.2" data-width="120" type="text" value="50"
+                                       id="percentageLastYearKnob">
+                                <div class="knob-label">mai mult ca anul trecut in aceiasi perioada</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">Situatie echipa {{ userTimeOffLog.user.team.name }}</h3>
+                    </div>
+                    <div class="card-body text-center">
+                        <span>
+                        <i class="far fa-check-circle text-success fa-5x"></i>
+                        </span>
+                        <h6 class="mt-2">Niciun alt coleg din echipa nu este in concediu in acea perioada</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Informatii {{ userTimeOffLog.timeOff.name }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-4 col-xl-3">
+                                <dt>Tip cerere</dt>
+                                <dd>Concediu odihna</dd>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-xl-3">
+                                <dt>Interval</dt>
+                                <dd>21.10.2020 - 30.10.2020</dd>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-xl-3">
+                                <dt>Numar zile lucratoare</dt>
+                                <dd>7 zile lucratoare</dd>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-xl-3">
+                                <dt>Data cerere</dt>
+                                <dd>13.10.2020</dd>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <button class="btn btn-lg btn-success shadow w-100">Aproba</button>
+            </div>
+            <div class="col-md-6">
+                <button class="btn btn-lg btn-danger shadow w-100">Refuza</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}

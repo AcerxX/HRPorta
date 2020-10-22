@@ -41,6 +41,9 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserTimeOffLog> userTimeOffLogs = new ArrayList<>();
 
+    @OneToMany(mappedBy = "approvalUser", fetch = FetchType.LAZY)
+    private List<UserTimeOffLog> responsibleForUserTimeOffs = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Company company;
 
@@ -64,6 +67,13 @@ public class User {
         return this.userTimeOffLogs
                 .stream()
                 .filter(userTimeOffLog -> !userTimeOffLog.getStatus().equals(UserTimeOffLog.STATUS_DELETED))
+                .collect(Collectors.toList());
+    }
+
+    public List<UserTimeOffLog> getResponsibleForUserTimeOffs() {
+        return this.responsibleForUserTimeOffs
+                .stream()
+                .filter(userTimeOffLog -> userTimeOffLog.getStatus().equals(UserTimeOffLog.STATUS_NOT_APPROVED))
                 .collect(Collectors.toList());
     }
 }
