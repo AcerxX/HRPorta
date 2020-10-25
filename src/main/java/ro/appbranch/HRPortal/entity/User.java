@@ -76,4 +76,12 @@ public class User {
                 .filter(userTimeOffLog -> userTimeOffLog.getStatus().equals(UserTimeOffLog.STATUS_NOT_APPROVED))
                 .collect(Collectors.toList());
     }
+
+    public List<User> getColleagues() {
+        return this.getResponsibleUser()
+                .getResponsibleForUsers()
+                .stream()
+                .filter(user -> !user.getId().equals(this.getId()))
+                .collect(Collectors.toList());
+    }
 }

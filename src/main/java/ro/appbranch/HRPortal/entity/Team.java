@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "team")
@@ -17,4 +18,7 @@ public class Team {
     private int id;
 
     private String name;
+
+    @OneToMany(mappedBy = "team")
+    private List<User> users;
 }

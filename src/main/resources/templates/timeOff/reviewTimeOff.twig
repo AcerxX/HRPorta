@@ -6,6 +6,7 @@
     <link href="/webjars/AdminLTE/3.0.5/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link href="/webjars/AdminLTE/3.0.5/plugins/datatables-responsive/css/responsive.bootstrap4.min.css"
           rel="stylesheet">
+    <link href="/webjars/AdminLTE/3.0.5/plugins/overlayScrollbars/css/OverlayScrollbars.min.css" rel="stylesheet">
     <style>
         .knob-label {
             margin-top: -20px;
@@ -19,6 +20,7 @@
     <script src="/webjars/AdminLTE/3.0.5/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
     <script src="/webjars/AdminLTE/3.0.5/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
     <script src="/webjars/AdminLTE/3.0.5/plugins/jquery-knob/jquery.knob.min.js"></script>
+    <script src="/webjars/AdminLTE/3.0.5/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
     <script>
         $('#remainingDaysKnob').knob({
             'format': function (value) {
@@ -29,6 +31,56 @@
             'format': function (value) {
                 return value + '%';
             }
+        });
+        $('#colleagues').overlayScrollbars({
+            height: '171px'
+        });
+
+        $('document').ready(function () {
+            $('#approveButton').on('click', function () {
+                $.ajax({
+                    type: "POST",
+                    url: '/time-off/approve/{{ userTimeOffLog.id }}',
+                    success: function (data) {
+                        Swal.fire(
+                            'Aprobat!',
+                            'Cererea a fost aprobata!',
+                            'success'
+                        ).then(() => {
+                            window.location.href = "/";
+                        });
+                    },
+                    error: function (data) {
+                        Swal.fire(
+                            'Eroare',
+                            data.responseJSON.message,
+                            'error'
+                        );
+                    }
+                });
+            });
+            $('#declineButton').on('click', function () {
+                $.ajax({
+                    type: "POST",
+                    url: '/time-off/decline/{{ userTimeOffLog.id }}',
+                    success: function (data) {
+                        Swal.fire(
+                            'Refuzat!',
+                            'Cererea a fost refuzata!',
+                            'success'
+                        ).then(() => {
+                            window.location.href = "/";
+                        });
+                    },
+                    error: function (data) {
+                        Swal.fire(
+                            'Eroare',
+                            data.responseJSON.message,
+                            'error'
+                        );
+                    }
+                });
+            });
         });
     </script>
 {% endblock %}
@@ -43,6 +95,19 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-12 text-center">
+                                        <img class="img img-circle elevation-2" src="{{ userTimeOffLog.user.image }}"
+                                             height="75" width="75" alt="{{ userTimeOffLog.user.fullName }}">
+                                    </div>
+                                    <div class="col-12 text-center mt-2">
+                                        <span class="font-weight-bold">{{ userTimeOffLog.user.fullName }}</span>
+                                        <br>
+                                        <span class="text-muted">{{ userTimeOffLog.user.job.name }}</span>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-6 text-center">
                                 <input class="knob" data-angleArc="250" data-angleOffset="-125"
                                        data-fgColor="#00c0ef" data-height="120" data-linecap="round" readonly
@@ -50,30 +115,54 @@
                                        id="remainingDaysKnob">
                                 <div class="knob-label font-weight-bold">zile ramase {{ "now"|date("YYYY") }}</div>
                             </div>
-                            <div class="col-6 text-center">
-                                <input class="knob" data-angleArc="250" data-angleOffset="-125"
-                                       data-fgColor="#28a745" data-height="120" data-linecap="round" readonly
-                                       data-thickness="0.2" data-width="120" type="text" value="50"
-                                       id="percentageLastYearKnob">
-                                <div class="knob-label">mai mult ca anul trecut in aceiasi perioada</div>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card card-success">
-                    <div class="card-header">
-                        <h3 class="card-title">Situatie echipa {{ userTimeOffLog.user.team.name }}</h3>
-                    </div>
-                    <div class="card-body text-center">
+            {% if userTimeOffLog.getColleaguesUserTimeOffLogsInThisInterval|length == 0 %}
+                <div class="col-md-6">
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <h3 class="card-title">Situatie echipa {{ userTimeOffLog.user.team.name }}</h3>
+                        </div>
+                        <div class="card-body text-center" style="height: 171px!important;">
                         <span>
                         <i class="far fa-check-circle text-success fa-5x"></i>
                         </span>
-                        <h6 class="mt-2">Niciun alt coleg din echipa nu este in concediu in acea perioada</h6>
+                            <h6 class="mt-2">Niciun alt coleg din echipa nu este in concediu in acea perioada</h6>
+                        </div>
                     </div>
                 </div>
-            </div>
+            {% else %}
+                <div class="col-md-6">
+                    <div class="card {% if userTimeOffLog.getColleaguesUserTimeOffLogsInThisInterval|length > 1 %}card-danger{% else %}card-warning{% endif %}">
+                        <div class="card-header">
+                            <h3 class="card-title">Situatie echipa {{ userTimeOffLog.user.team.name }}</h3>
+                        </div>
+                        <div class="card-body" id="colleagues" style="height: 171px!important;">
+                            <div class="row">
+                                {% for colleagueUserTimeOffLog in userTimeOffLog.getColleaguesUserTimeOffLogsInThisInterval %}
+                                    <div class="col-6 col-xl-4 mb-1">
+                                        <div class="row">
+                                            <div class="col-4 text-center">
+                                                <img class="img-circle img-fluid img-bordered-sm"
+                                                     src="{{ colleagueUserTimeOffLog.user.image }}"
+                                                     alt="{{ colleagueUserTimeOffLog.user.fullName }}">
+                                            </div>
+                                            <div class="col-8 my-auto">
+                                                <a href="/time-off/review/{{ colleagueUserTimeOffLog.id }}"
+                                                   class="font-weight-bold">{{ colleagueUserTimeOffLog.user.fullName }}</a>
+                                                <br>
+                                                <span class="small text-muted">{{ colleagueUserTimeOffLog.numberOfOverlappingDays }} zile suprapuse</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
             <div class="col-12">
                 <div class="card card-primary">
                     <div class="card-header">
@@ -82,20 +171,27 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-6 col-md-4 col-xl-3">
+                                <dt>Echipa</dt>
+                                <dd>{{ userTimeOffLog.user.team.name }}</dd>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-xl-3">
                                 <dt>Tip cerere</dt>
-                                <dd>Concediu odihna</dd>
+                                <dd>{{ userTimeOffLog.timeOff.name }}</dd>
                             </div>
                             <div class="col-sm-6 col-md-4 col-xl-3">
                                 <dt>Interval</dt>
-                                <dd>21.10.2020 - 30.10.2020</dd>
+                                <dd>{{ userTimeOffLog.getStartDateAsString }}
+                                    - {{ userTimeOffLog.getEndDateAsString }}</dd>
                             </div>
                             <div class="col-sm-6 col-md-4 col-xl-3">
                                 <dt>Numar zile lucratoare</dt>
-                                <dd>7 zile lucratoare</dd>
+                                <dd>{{ userTimeOffLog.numberOfDays }} zile lucratoare</dd>
                             </div>
                             <div class="col-sm-6 col-md-4 col-xl-3">
-                                <dt>Data cerere</dt>
-                                <dd>13.10.2020</dd>
+                                <dt>Cerere adaugata</dt>
+                                <dd>{{ userTimeOffLog.getCreatedAsTimeAgoString }}
+                                    ({{ userTimeOffLog.getCreatedAsString }})
+                                </dd>
                             </div>
                         </div>
                     </div>
@@ -104,10 +200,10 @@
         </div>
         <div class="row mt-4">
             <div class="col-md-6 mb-3 mb-md-0">
-                <button class="btn btn-lg btn-success shadow w-100">Aproba</button>
+                <button class="btn btn-lg btn-success shadow w-100" id="approveButton">Aproba</button>
             </div>
             <div class="col-md-6">
-                <button class="btn btn-lg btn-danger shadow w-100">Refuza</button>
+                <button class="btn btn-lg btn-danger shadow w-100" id="declineButton">Refuza</button>
             </div>
         </div>
     </div>

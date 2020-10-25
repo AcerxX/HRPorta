@@ -8,6 +8,8 @@ import org.springframework.util.ObjectUtils;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -41,12 +43,19 @@ public class UserTimeOffLog {
 
     private LocalDate created = LocalDate.now();
 
+    @Transient
+    private Integer numberOfOverlappingDays;
+
     public String getStartDateAsString() {
         return this.startDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 
     public String getEndDateAsString() {
         return this.endDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    }
+
+    public String getCreatedAsString() {
+        return this.created.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 
     public String getApprovalDateAsString() {
@@ -74,5 +83,23 @@ public class UserTimeOffLog {
             case 1 -> "Acum o zi";
             default -> "Acum " + daysAgo + " zile";
         };
+    }
+
+    public List<UserTimeOffLog> getColleaguesUserTimeOffLogsInThisInterval() {
+        return this.user
+                .getColleagues()
+                .stream()
+                .flatMap(user1 ->
+                        user1.getUserTimeOffLogs()
+                                .stream()
+                                .filter(userTimeOffLog -> {
+                                    var maxStartDate = userTimeOffLog.getStartDate().isBefore(this.getStartDate()) ? this.getStartDate() : userTimeOffLog.getStartDate();
+                                    var minEndDate = userTimeOffLog.getEndDate().isBefore(this.getEndDate()) ? userTimeOffLog.getEndDate() : this.getStartDate();
+
+                                    userTimeOffLog.setNumberOfOverlappingDays(maxStartDate.until(minEndDate).getDays());
+
+                                    return userTimeOffLog.getNumberOfOverlappingDays() > 0;
+                                })
+                ).collect(Collectors.toList());
     }
 }

@@ -73,4 +73,37 @@ public class TimeOffController extends SecuredController {
 
         return "timeOff/reviewTimeOff";
     }
+
+    @ResponseBody()
+    @PostMapping("/approve/{id}")
+    public BaseResponse approveUserTimeOffLog(@PathVariable Integer id) {
+        var response = new BaseResponse();
+
+        changeUserTimeOffLogStatus(id, UserTimeOffLog.STATUS_APPROVED);
+
+        return response;
+    }
+
+    private void changeUserTimeOffLogStatus(Integer id, Integer status) {
+        if (this.getLoggedUser().getRole().getLevel() < 5) {
+            throw new RuntimeException("Nu aveti dreptul sa aprobati cereri de concediu!");
+        }
+
+        var userTimeOffLog = userTimeOffLogRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Concediul cu id-ul " + id + " nu a fost gasit!"));
+
+
+        userTimeOffLog.setStatus(status);
+        userTimeOffLogRepository.save(userTimeOffLog);
+    }
+
+    @ResponseBody()
+    @PostMapping("/decline/{id}")
+    public BaseResponse declineUserTimeOffLog(@PathVariable Integer id) {
+        var response = new BaseResponse();
+
+        changeUserTimeOffLogStatus(id, UserTimeOffLog.STATUS_DECLINED);
+
+        return response;
+    }
 }

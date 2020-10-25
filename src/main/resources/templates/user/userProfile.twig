@@ -266,11 +266,9 @@
                         <strong><i class="fas fa-glass-cheers"></i> Colegi</strong>
 
                         <p class="text-muted">
-                            {% for coleague in user.responsibleUser.responsibleForUsers %}
-                                {% if coleague.id != user.id %}
-                                    {{ coleague.fullName }}
-                                    <br>
-                                {% endif %}
+                            {% for colleague in user.getColleagues %}
+                                {{ coleague.fullName }}
+                                <br>
                             {% endfor %}
                         </p>
 
