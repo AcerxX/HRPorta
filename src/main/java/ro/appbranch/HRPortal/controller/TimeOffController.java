@@ -92,6 +92,10 @@ public class TimeOffController extends SecuredController {
         var userTimeOffLog = userTimeOffLogRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Concediul cu id-ul " + id + " nu a fost gasit!"));
 
+        if (userTimeOffLog.getStatus().equals(UserTimeOffLog.STATUS_DELETED)) {
+            throw new RuntimeException("Cererea a fost deja stearsa din sistem!");
+        }
+
 
         userTimeOffLog.setStatus(status);
         userTimeOffLogRepository.save(userTimeOffLog);
