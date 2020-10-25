@@ -2,14 +2,14 @@ package ro.appbranch.HRPortal.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import ro.appbranch.HRPortal.config.HRPTransactional;
 import ro.appbranch.HRPortal.dto.timeOff.AddTimeOffRequest;
-import ro.appbranch.HRPortal.entity.TimeOff;
-import ro.appbranch.HRPortal.entity.User;
 import ro.appbranch.HRPortal.entity.UserTimeOffLog;
 import ro.appbranch.HRPortal.repository.*;
 
 import java.time.DayOfWeek;
+import java.util.List;
 
 @Service
 public class TimeOffService {
@@ -64,25 +64,40 @@ public class TimeOffService {
 
         userTimeOffLogRepository.save(userTimeOffLog);
 
-        removeTimeOffDays(user, timeOff, (double) numberOfWorkingDays);
+        removeTimeOffDays(userTimeOffLog);
     }
 
-    private void removeTimeOffDays(User user, TimeOff timeOff, Double workingDays) {
-        var userTimeOffOptional = userTimeOffInfoRepository.findFirstByUserAndTimeOff(user, timeOff);
+    private void removeTimeOffDays(UserTimeOffLog userTimeOffLog) {
+        var userTimeOffInfoOptional = userTimeOffInfoRepository.findFirstByUserAndTimeOff(userTimeOffLog.getUser(), userTimeOffLog.getTimeOff());
 
-        if (userTimeOffOptional.isPresent()) {
-            var userTimeOff = userTimeOffOptional.get();
-            userTimeOff.addNumberOfDays(-workingDays);
+        if (userTimeOffInfoOptional.isPresent()) {
+            var userTimeOffInfo = userTimeOffInfoOptional.get();
+            userTimeOffInfo.addNumberOfDays(-userTimeOffLog.getNumberOfDays().doubleValue());
 
-            userTimeOffInfoRepository.save(userTimeOff);
+            userTimeOffInfoRepository.save(userTimeOffInfo);
+
+            userTimeOffLog.setUserTimeOffInfo(userTimeOffInfo);
+            userTimeOffLogRepository.save(userTimeOffLog);
         }
     }
 
-    public void deleteTimeOffLog(Integer timeOffLogId) {
-        var userTimeOffLog = userTimeOffLogRepository.findById(timeOffLogId)
-                .orElseThrow(() -> new RuntimeException("Cererea ce se dorea a fi stearsa nu a fost gasita in baza de date!"));
+    public void changeUserTimeOffLogStatus(Integer userTimeOffLogId, Integer status) {
+        var userTimeOffLog = userTimeOffLogRepository.findById(userTimeOffLogId)
+                .orElseThrow(() -> new RuntimeException("Cererea cu id-ul " + userTimeOffLogId + " nu a fost gasita!"));
 
-        userTimeOffLog.setStatus(UserTimeOffLog.STATUS_DELETED);
+        if (userTimeOffLog.getStatus().equals(UserTimeOffLog.STATUS_DELETED)) {
+            throw new RuntimeException("Cererea a fost deja stearsa din sistem!");
+        }
+
+        userTimeOffLog.setStatus(status);
         userTimeOffLogRepository.save(userTimeOffLog);
+
+        if (List.of(UserTimeOffLog.STATUS_DECLINED, UserTimeOffLog.STATUS_DELETED).contains(userTimeOffLog.getStatus())
+                && !ObjectUtils.isEmpty(userTimeOffLog.getUserTimeOffInfo())
+        ) {
+            var userTimeOffInfo = userTimeOffLog.getUserTimeOffInfo();
+            userTimeOffInfo.addNumberOfDays(userTimeOffLog.getNumberOfDays().doubleValue());
+            userTimeOffInfoRepository.save(userTimeOffInfo);
+        }
     }
 }

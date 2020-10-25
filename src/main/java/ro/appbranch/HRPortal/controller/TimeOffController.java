@@ -37,7 +37,7 @@ public class TimeOffController extends SecuredController {
     @ResponseBody()
     @DeleteMapping("/delete/{id}")
     public BaseResponse deleteTimeOff(@PathVariable Integer id) {
-        timeOffService.deleteTimeOffLog(id);
+        timeOffService.changeUserTimeOffLogStatus(id, UserTimeOffLog.STATUS_DELETED);
 
         return new BaseResponse();
     }
@@ -79,26 +79,13 @@ public class TimeOffController extends SecuredController {
     public BaseResponse approveUserTimeOffLog(@PathVariable Integer id) {
         var response = new BaseResponse();
 
-        changeUserTimeOffLogStatus(id, UserTimeOffLog.STATUS_APPROVED);
-
-        return response;
-    }
-
-    private void changeUserTimeOffLogStatus(Integer id, Integer status) {
         if (this.getLoggedUser().getRole().getLevel() < 5) {
             throw new RuntimeException("Nu aveti dreptul sa aprobati cereri de concediu!");
         }
 
-        var userTimeOffLog = userTimeOffLogRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Concediul cu id-ul " + id + " nu a fost gasit!"));
+        timeOffService.changeUserTimeOffLogStatus(id, UserTimeOffLog.STATUS_APPROVED);
 
-        if (userTimeOffLog.getStatus().equals(UserTimeOffLog.STATUS_DELETED)) {
-            throw new RuntimeException("Cererea a fost deja stearsa din sistem!");
-        }
-
-
-        userTimeOffLog.setStatus(status);
-        userTimeOffLogRepository.save(userTimeOffLog);
+        return response;
     }
 
     @ResponseBody()
@@ -106,7 +93,11 @@ public class TimeOffController extends SecuredController {
     public BaseResponse declineUserTimeOffLog(@PathVariable Integer id) {
         var response = new BaseResponse();
 
-        changeUserTimeOffLogStatus(id, UserTimeOffLog.STATUS_DECLINED);
+        if (this.getLoggedUser().getRole().getLevel() < 5) {
+            throw new RuntimeException("Nu aveti dreptul sa aprobati cereri de concediu!");
+        }
+
+        timeOffService.changeUserTimeOffLogStatus(id, UserTimeOffLog.STATUS_DECLINED);
 
         return response;
     }

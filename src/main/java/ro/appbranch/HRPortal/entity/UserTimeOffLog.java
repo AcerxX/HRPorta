@@ -32,6 +32,9 @@ public class UserTimeOffLog {
     @ManyToOne(fetch = FetchType.LAZY)
     private TimeOff timeOff;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private UserTimeOffInfo userTimeOffInfo;
+
     private Integer numberOfDays;
     private LocalDate startDate;
     private LocalDate endDate;
