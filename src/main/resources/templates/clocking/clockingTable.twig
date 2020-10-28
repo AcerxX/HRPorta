@@ -1,0 +1,79 @@
+{% extends "../base.twig" %}
+
+{% set title = "Raport pontaj " ~ (loggedUser.company.name) %}
+
+{% block stylesheets %}
+    <style>
+        table {
+            font-size: 80%!important;
+        }
+        th {
+            margin: 0!important;
+            padding: 0!important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-striped table-bordered text-center" id="clockingTable">
+                            <thead>
+                            <tr>
+                                <th colspan="34">
+                                </th>
+                                <th colspan="2">
+                                    Ore lucratoare
+                                </th>
+                                <th colspan="2">
+                                    Ore nelucratoare
+                                </th>
+                            </tr>
+                            <tr>
+                                <th rowspan="2">
+                                    Nr. crt.
+                                </th>
+                                <th rowspan="2">
+                                    Nume complet
+                                </th>
+                                <th rowspan="2">
+                                    CNP
+                                </th>
+                                <th colspan="31">
+                                    Ore zilnice
+                                </th>
+                                <th>
+                                    TOL
+                                </th>
+                                <th>&nbsp;</th>
+                                <th colspan="2">
+                                    din care:
+                                </th>
+                            </tr>
+                            <tr>
+                                {% for day in days %}
+                                    <th>
+                                        {{ day }}
+                                    </th>
+                                {% endfor %}
+                                <th>
+                                    Total
+                                </th>
+                                <th>&nbsp;</th>
+                                <th>
+                                    CO
+                                </th>
+                                <th>&nbsp;</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
