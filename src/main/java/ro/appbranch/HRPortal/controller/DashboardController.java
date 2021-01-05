@@ -78,4 +78,9 @@ public class DashboardController extends SecuredController {
 
         return "dashboard";
     }
+
+    @GetMapping("/document-test")
+    public String documentTest() {
+        return "documentTest";
+    }
 }
